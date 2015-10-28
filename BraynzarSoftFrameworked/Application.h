@@ -2,7 +2,11 @@
 #define _APPLICATION_H_
 
 #include "DXBase.h"
+#include "ColorShader.h"
+#include "Camera.h"
+
 #include "Triangle.h"
+#include "Cube.h"
 
 class Application
 {
@@ -19,7 +23,12 @@ private:
 
 private:
 	DXBase* _dxBase;
+	ColorShader* _colorShader;
+	Camera* _camera;
+
+	//Displays
 	Triangle* _triangle;
+	Cube* _cube;
 };
 
 #endif

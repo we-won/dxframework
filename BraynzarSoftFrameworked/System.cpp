@@ -3,6 +3,7 @@
 
 System::System()
 {
+	_application = 0;
 }
 
 

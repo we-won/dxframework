@@ -11,10 +11,12 @@ private:
 	struct Vertex	//Overloaded Vertex Structure
 	{
 		Vertex(){}
-		Vertex(float x, float y, float z)
-			: pos(x, y, z){}
+		Vertex(float x, float y, float z,
+				float cr, float cg, float cb, float ca)
+				: pos(x, y, z), color(cr, cg, cb, ca){}
 
 		XMFLOAT3 pos;
+		XMFLOAT4 color;
 	};
 
 public:
@@ -23,18 +25,15 @@ public:
 
 	bool Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	void ReleaseObjects();
-
 	void Render(ID3D11DeviceContext* deviceContext);
+
+	int GetIndexCount();
 
 private:
 	ID3D11Buffer* _triangleVertBuffer;
-	ID3D11VertexShader* _VS;
-	ID3D11PixelShader* _PS;
-	ID3D10Blob* _VS_Buffer;
-	ID3D10Blob* _PS_Buffer;
-	ID3D11InputLayout* _vertLayout;
 
 	Vertex* _vertices;
+	int _indexCount;
 };
 
 #endif
