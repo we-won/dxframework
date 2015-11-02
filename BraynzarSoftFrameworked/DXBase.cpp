@@ -147,6 +147,7 @@ bool DXBase::Initialize(HWND hwnd, int width, int height, bool fullscreen)
 	XMStoreFloat4x4(&_projection, projection);
 
 	XMMATRIX ortho = XMMatrixOrthographicLH((float)width, (float)height, 0.1f, 1000.0f);
+	//XMMATRIX ortho = XMMatrixOrthographicOffCenterLH(0.0f, (float)width, (float)height, 0.0f, 0.1f, 1000.0f);
 	XMStoreFloat4x4(&_ortho, ortho);
 
 	return true;
@@ -218,15 +219,15 @@ void DXBase::CreateRasterState()
 	D3D11_RASTERIZER_DESC rasterDesc;
 	ZeroMemory(&rasterDesc, sizeof(D3D11_RASTERIZER_DESC));
 
-	rasterDesc.AntialiasedLineEnable = false;
+	rasterDesc.AntialiasedLineEnable = FALSE;
 	rasterDesc.CullMode = D3D11_CULL_BACK;
 	rasterDesc.DepthBias = 0;
 	rasterDesc.DepthBiasClamp = 0.0f;
-	rasterDesc.DepthClipEnable = true;
+	rasterDesc.DepthClipEnable = TRUE;
 	rasterDesc.FillMode = D3D11_FILL_SOLID;
-	rasterDesc.FrontCounterClockwise = false;
-	rasterDesc.MultisampleEnable = false;
-	rasterDesc.ScissorEnable = false;
+	rasterDesc.FrontCounterClockwise = FALSE;
+	rasterDesc.MultisampleEnable = FALSE;
+	rasterDesc.ScissorEnable = FALSE;
 	rasterDesc.SlopeScaledDepthBias = 0.0f;
 
 	// Create the rasterizer state from the description we just filled out.

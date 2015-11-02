@@ -8,6 +8,7 @@ Application::Application()
 	_textureShader = 0;
 	_fontShader = 0;
 	_camera = 0;
+	_timer = 0;
 
 	_text = 0;
 	_cube = 0;
@@ -22,6 +23,10 @@ Application::~Application()
 bool Application::Initialize(HINSTANCE hInstance, HWND hwnd, int width, int height)
 {
 	_dxBase = new DXBase;
+	if (!_dxBase)
+	{
+		return false;
+	}
 
 	if (!_dxBase->Initialize(hwnd, width, height, FULL_SCREEN))
 	{
@@ -29,6 +34,10 @@ bool Application::Initialize(HINSTANCE hInstance, HWND hwnd, int width, int heig
 	}
 
 	_colorShader = new ColorShader;
+	if (!_colorShader)
+	{
+		return false;
+	}
 
 	if (!_colorShader->Initialize(_dxBase->GetDevice()))
 	{
@@ -36,6 +45,10 @@ bool Application::Initialize(HINSTANCE hInstance, HWND hwnd, int width, int heig
 	}
 
 	_textureShader = new TextureShader;
+	if (!_textureShader)
+	{
+		return false;
+	}
 
 	if (!_textureShader->Initialize(_dxBase->GetDevice()))
 	{
@@ -43,13 +56,32 @@ bool Application::Initialize(HINSTANCE hInstance, HWND hwnd, int width, int heig
 	}
 
 	_fontShader = new FontShader;
+	if (!_fontShader)
+	{
+		return false;
+	}
 
 	if (!_fontShader->Initialize(_dxBase->GetDevice()))
 	{
 		return false;
 	}
 
+	_timer = new TimerLx;
+	if (!_timer)
+	{
+		return false;
+	}
+
+	if (!_timer->Initialize())
+	{
+		return false;
+	}
+
 	_text = new TextManager;
+	if (!_text)
+	{
+		return false;
+	}
 
 	if (!_text->Initialize(_dxBase->GetDevice()))
 	{
@@ -57,6 +89,10 @@ bool Application::Initialize(HINSTANCE hInstance, HWND hwnd, int width, int heig
 	}
 
 	_cube = new Cube;
+	if (!_cube)
+	{
+		return false;
+	}
 
 	if (!_cube->Initialize(_dxBase->GetDevice(), _dxBase->GetDeviceContext()))
 	{
@@ -64,6 +100,10 @@ bool Application::Initialize(HINSTANCE hInstance, HWND hwnd, int width, int heig
 	}
 
 	_cube_2 = new Cube;
+	if (!_cube_2)
+	{
+		return false;
+	}
 
 	if (!_cube_2->Initialize(_dxBase->GetDevice(), _dxBase->GetDeviceContext()))
 	{
@@ -109,6 +149,12 @@ void Application::Shutdown()
 		_fontShader = 0;
 	}
 
+	if (_timer)
+	{
+		delete _timer;
+		_timer = 0;
+	}
+
 	if (_text)
 	{
 		_text->ReleaseObjects();
@@ -134,6 +180,11 @@ void Application::Shutdown()
 bool Application::Frame()
 {
 	bool result;
+
+	_timer->Frame();
+
+	_cube->Spin(_timer->GetFrameTime());
+	_cube_2->Rotate(_timer->GetFrameTime());
 
 	// Render the graphics.
 	result = RenderGraphics();
@@ -161,9 +212,7 @@ bool Application::RenderGraphics()
 	//First Cube
 	worldMatrix = _cube->GetWorldMatrix();
 
-	_cube->Spin();
 	_cube->Render(_dxBase->GetDeviceContext());
-
 	result = _textureShader->Render(_dxBase->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, _cube->GetIndexCount(), _cube->GetTexture());
 	if (!result)
 	{
@@ -173,9 +222,7 @@ bool Application::RenderGraphics()
 	//Second Cube
 	worldMatrix = _cube_2->GetWorldMatrix();
 
-	_cube_2->Rotate();
 	_cube_2->Render(_dxBase->GetDeviceContext());
-
 	result = _textureShader->Render(_dxBase->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, _cube_2->GetIndexCount(), _cube_2->GetTexture());
 	if (!result)
 	{

@@ -156,10 +156,11 @@ void Cube::ReleaseObjects()
 	}
 }
 
-bool Cube::Spin()
+bool Cube::Spin(double time)
 {
 	//Keep the cubes rotating
-	_rot += .0005f;
+	//_rot += .0005f;
+	_rot += 1.0f * time;
 	if (_rot > 6.26f)
 		_rot = 0.0f;
 
@@ -175,10 +176,11 @@ bool Cube::Spin()
 	return true;
 }
 
-bool Cube::Rotate()
+bool Cube::Rotate(double time)
 {
 	//Keep the cubes rotating
-	_rot += .0005f;
+	//_rot += .0005f;
+	_rot += 1.0f * time;
 	if (_rot > 6.26f)
 		_rot = 0.0f;
 

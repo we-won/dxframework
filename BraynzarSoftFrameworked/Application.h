@@ -8,8 +8,9 @@ const bool FULL_SCREEN = false;
 #include "TextureShader.h"
 #include "FontShader.h"
 #include "Camera.h"
-#include "TextManager.h"
+#include "TimerLx.h"
 
+#include "TextManager.h"
 #include "Cube.h"
 
 class Application
@@ -31,6 +32,7 @@ private:
 	TextureShader* _textureShader;
 	FontShader* _fontShader;
 	Camera* _camera;
+	TimerLx* _timer;
 
 	//Displays
 	TextManager* _text;

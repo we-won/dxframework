@@ -26,8 +26,8 @@ public:
 
 	bool Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	void ReleaseObjects();
-	bool Spin();
-	bool Rotate();
+	bool Spin(double time);
+	bool Rotate(double time);
 	void Render(ID3D11DeviceContext* deviceContext);
 
 	int GetIndexCount();

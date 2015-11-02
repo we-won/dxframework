@@ -4,6 +4,8 @@
 System::System()
 {
 	_application = 0;
+	_wndClassName = "firstwindow";
+	_hwnd = NULL;
 }
 
 

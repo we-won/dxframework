@@ -21,8 +21,8 @@ public:
 	void ShutdownWindows(); 
 
 private:
-	LPCTSTR _wndClassName = "firstwindow";
-	HWND _hwnd = NULL;
+	LPCTSTR _wndClassName;
+	HWND _hwnd;
 
 	Application* _application;
 };
