@@ -1,14 +1,17 @@
-﻿Build started 11/2/2015 3:15:02 AM.
-     1>Project "C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\BraynzarSoftFrameworked\BraynzarSoftFrameworked.vcxproj" on node 2 (build target(s)).
-     1>InitializeBuildStatus:
-         Creating "Debug\BraynzarSoftFrameworked.unsuccessfulbuild" because "AlwaysCreate" was specified.
-       ClCompile:
-         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /wd4005 /analyze- /errorReport:prompt Cube.cpp
-         Cube.cpp
-     1>c:\users\tinotech\documents\visual studio 2010\projects\dxframework\braynzarsoftframeworked\cube.cpp(163): warning C4244: '+=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\tinotech\documents\visual studio 2010\projects\dxframework\braynzarsoftframeworked\cube.cpp(183): warning C4244: '+=' : conversion from 'double' to 'float', possible loss of data
+﻿Build started 11/3/2015 12:47:13 AM.
+     1>Project "C:\Users\™\Documents\Visual Studio 2013\Projects\dxframework\BraynzarSoftFrameworked\BraynzarSoftFrameworked.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /wd4005 /analyze- /errorReport:prompt Application.cpp FontShader.cpp System.cpp main.cpp
+         FontShader.cpp
+         Generating Code...
+         Compiling...
+         Application.cpp
+         Generating Code...
+         Skipping... (no relevant changes detected)
+         main.cpp
+         System.cpp
        Link:
-         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\Debug\BraynzarSoftFrameworked.exe" /NOLOGO d3d11.lib d3dx11.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\BraynzarSoftFrameworked.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\Debug\BraynzarSoftFrameworked.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\Debug\BraynzarSoftFrameworked.lib" /MACHINE:X86 Debug\Application.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\™\Documents\Visual Studio 2013\Projects\dxframework\Debug\BraynzarSoftFrameworked.exe" /INCREMENTAL /NOLOGO d3d11.lib d3dx11.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\™\Documents\Visual Studio 2013\Projects\dxframework\Debug\BraynzarSoftFrameworked.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\™\Documents\Visual Studio 2013\Projects\dxframework\Debug\BraynzarSoftFrameworked.lib" /MACHINE:X86 Debug\Application.obj
          Debug\Camera.obj
          Debug\ColorShader.obj
          Debug\Cube.obj
@@ -20,15 +23,9 @@
          Debug\TextureShader.obj
          Debug\TimerLx.obj
          Debug\Triangle.obj
-         LINK : C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\Debug\BraynzarSoftFrameworked.exe not found or not built by the last incremental link; performing full link
-         BraynzarSoftFrameworked.vcxproj -> C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\Debug\BraynzarSoftFrameworked.exe
-       Manifest:
-         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\Debug\BraynzarSoftFrameworked.exe;#1" /manifest Debug\BraynzarSoftFrameworked.exe.intermediate.manifest
-       FinalizeBuildStatus:
-         Deleting file "Debug\BraynzarSoftFrameworked.unsuccessfulbuild".
-         Touching "Debug\BraynzarSoftFrameworked.lastbuildstate".
-     1>Done Building Project "C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\BraynzarSoftFrameworked\BraynzarSoftFrameworked.vcxproj" (build target(s)).
+         BraynzarSoftFrameworked.vcxproj -> C:\Users\™\Documents\Visual Studio 2013\Projects\dxframework\Debug\BraynzarSoftFrameworked.exe
+     1>Done Building Project "C:\Users\™\Documents\Visual Studio 2013\Projects\dxframework\BraynzarSoftFrameworked\BraynzarSoftFrameworked.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:03.56
+Time Elapsed 00:00:01.82

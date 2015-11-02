@@ -12,6 +12,25 @@ private:
 	struct cbPerObject
 	{
 		XMFLOAT4X4  WVP;
+		XMFLOAT4X4  World;
+	};
+
+
+	struct Light
+	{
+		Light()
+		{
+			ZeroMemory(this, sizeof(Light));
+		}
+		XMFLOAT3 dir;
+		float pad;
+		XMFLOAT4 ambient;
+		XMFLOAT4 diffuse;
+	};
+
+	struct cbPerFrame
+	{
+		Light  light;
 	};
 
 public:
@@ -33,7 +52,10 @@ private:
 	ID3D11Buffer* _cbPerObjectBuffer;
 	ID3D11SamplerState* _texSamplerState;
 	cbPerObject _cbPerObj;
-	XMFLOAT4X4 _WVP;
+
+	ID3D11Buffer* _cbPerFrameBuffer;
+	Light _light;
+	cbPerFrame _constbuffPerFrame;
 };
 
 #endif

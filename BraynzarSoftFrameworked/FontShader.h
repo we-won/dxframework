@@ -32,7 +32,6 @@ private:
 	ID3D11Buffer* _cbPerObjectBuffer;
 	ID3D11SamplerState* _texSamplerState;
 	cbPerObject _cbPerObj;
-	XMFLOAT4X4 _WVP;
 };
 
 #endif

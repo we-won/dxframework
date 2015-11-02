@@ -10,19 +10,14 @@ public:
 	~TimerLx();
 
 	bool Initialize();
-	double GetTime();
 	void Frame();
-	double GetFrameTime();
+	float GetTime();
 
 private:
-	double _countsPerSecond;
-	__int64 _counterStart;
-
-	int _frameCount;
-	int _fps;
+	float _countsPerSecond;
 
 	__int64 _frameTimeOld;
-	double _frameTime;
+	float _frameTime;
 };
 
 #endif

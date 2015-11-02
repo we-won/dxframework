@@ -13,11 +13,13 @@ private:
 	{
 		Vertex(){}
 		Vertex(float x, float y, float z,
-			float u, float v)
-			: pos(x, y, z), texCoord(u, v){}
+			float u, float v,
+			float nx, float ny, float nz)
+			: pos(x, y, z), texCoord(u, v), normal(nx, ny, nz){}
 
 		XMFLOAT3 pos;
 		XMFLOAT2 texCoord;
+		XMFLOAT3 normal;
 	};
 
 public:
@@ -26,8 +28,8 @@ public:
 
 	bool Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	void ReleaseObjects();
-	bool Spin(double time);
-	bool Rotate(double time);
+	bool Spin(float time);
+	bool Rotate(float time);
 	void Render(ID3D11DeviceContext* deviceContext);
 
 	int GetIndexCount();
@@ -37,7 +39,6 @@ public:
 private:
 	ID3D11Buffer* _squareIndexBuffer;
 	ID3D11Buffer* _squareVertBuffer;
-	ID3D11Buffer* cbPerObjectBuffer;
 
 	ID3D11ShaderResourceView* _texture;
 

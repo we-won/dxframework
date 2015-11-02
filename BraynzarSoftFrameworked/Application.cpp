@@ -28,7 +28,7 @@ bool Application::Initialize(HINSTANCE hInstance, HWND hwnd, int width, int heig
 		return false;
 	}
 
-	if (!_dxBase->Initialize(hwnd, width, height, FULL_SCREEN))
+	if (!_dxBase->Initialize(hwnd, width, height, FULL_SCREEN, VSYNC_ENABLED))
 	{
 		return false;
 	}
@@ -183,8 +183,8 @@ bool Application::Frame()
 
 	_timer->Frame();
 
-	_cube->Spin(_timer->GetFrameTime());
-	_cube_2->Rotate(_timer->GetFrameTime());
+	_cube->Spin(_timer->GetTime());
+	//_cube_2->Rotate(_timer->GetTime());
 
 	// Render the graphics.
 	result = RenderGraphics();

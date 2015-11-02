@@ -8,7 +8,7 @@ TextureShader::TextureShader()
 	_vertLayout = 0;
 	_cbPerObjectBuffer = 0;
 	_texSamplerState = 0;
-
+	_cbPerFrameBuffer = 0;
 }
 
 
@@ -19,18 +19,18 @@ TextureShader::~TextureShader()
 bool TextureShader::Initialize(ID3D11Device* device)
 {
 	HRESULT hr;
-	ID3D10Blob* _VS_Buffer;
-	ID3D10Blob* _PS_Buffer;
+	ID3D10Blob* VS_Buffer;
+	ID3D10Blob* PS_Buffer;
 
 	//Compile Shaders from shader file
-	hr = D3DX11CompileFromFile("Effects.fx", 0, 0, "VS", "vs_4_0", 0, 0, 0, &_VS_Buffer, 0, 0);
+	hr = D3DX11CompileFromFile("Effects.fx", 0, 0, "VS", "vs_4_0", 0, 0, 0, &VS_Buffer, 0, 0);
 	if (FAILED(hr))
 	{
 		MessageBox(0, "Error loading vertex shader!", "Compile Error", MB_OK);
 		return false;
 	}
 
-	hr = D3DX11CompileFromFile("Effects.fx", 0, 0, "PS", "ps_4_0", 0, 0, 0, &_PS_Buffer, 0, 0);
+	hr = D3DX11CompileFromFile("Effects.fx", 0, 0, "PS", "ps_4_0", 0, 0, 0, &PS_Buffer, 0, 0);
 	if (FAILED(hr))
 	{
 		MessageBox(0, "Error loading pixel shader!", "Compile Error", MB_OK);
@@ -38,20 +38,20 @@ bool TextureShader::Initialize(ID3D11Device* device)
 	}
 
 	//Create the Shader Objects
-	hr = device->CreateVertexShader(_VS_Buffer->GetBufferPointer(), _VS_Buffer->GetBufferSize(), NULL, &_VS);
+	hr = device->CreateVertexShader(VS_Buffer->GetBufferPointer(), VS_Buffer->GetBufferSize(), NULL, &_VS);
 	if (FAILED(hr))
 	{
-		if (_VS_Buffer)
-			_VS_Buffer->Release();
+		if (VS_Buffer)
+			VS_Buffer->Release();
 
 		return false;
 	}
 
-	hr = device->CreatePixelShader(_PS_Buffer->GetBufferPointer(), _PS_Buffer->GetBufferSize(), NULL, &_PS);
+	hr = device->CreatePixelShader(PS_Buffer->GetBufferPointer(), PS_Buffer->GetBufferSize(), NULL, &_PS);
 	if (FAILED(hr))
 	{
-		if (_PS_Buffer)
-			_PS_Buffer->Release();
+		if (PS_Buffer)
+			PS_Buffer->Release();
 
 		return false;
 	}
@@ -61,22 +61,23 @@ bool TextureShader::Initialize(ID3D11Device* device)
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
 	UINT numElements = ARRAYSIZE(layout);
 
 	//Create the Input Layout
-	hr = device->CreateInputLayout(layout, numElements, _VS_Buffer->GetBufferPointer(), _VS_Buffer->GetBufferSize(), &_vertLayout);
+	hr = device->CreateInputLayout(layout, numElements, VS_Buffer->GetBufferPointer(), VS_Buffer->GetBufferSize(), &_vertLayout);
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
-	_VS_Buffer->Release();
-	_VS_Buffer = 0;
+	VS_Buffer->Release();
+	VS_Buffer = 0;
 
-	_PS_Buffer->Release();
-	_PS_Buffer = 0;
+	PS_Buffer->Release();
+	PS_Buffer = 0;
 
 	//Create the buffer to send to the cbuffer in effect file
 	D3D11_BUFFER_DESC cbbd;
@@ -94,6 +95,17 @@ bool TextureShader::Initialize(ID3D11Device* device)
 		return false;
 	}
 
+	//Create the buffer to send to the cbuffer per frame in effect file
+	ZeroMemory(&cbbd, sizeof(D3D11_BUFFER_DESC));
+
+	cbbd.Usage = D3D11_USAGE_DEFAULT;
+	cbbd.ByteWidth = sizeof(cbPerFrame);
+	cbbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cbbd.CPUAccessFlags = 0;
+	cbbd.MiscFlags = 0;
+
+	hr = device->CreateBuffer(&cbbd, NULL, &_cbPerFrameBuffer);
+
 	// Describe the Sample State
 	D3D11_SAMPLER_DESC sampDesc;
 	ZeroMemory(&sampDesc, sizeof(sampDesc));
@@ -107,6 +119,10 @@ bool TextureShader::Initialize(ID3D11Device* device)
 
 	//Create the Sample State
 	hr = device->CreateSamplerState(&sampDesc, &_texSamplerState);
+
+	_light.dir = XMFLOAT3(0.25f, 0.5f, -1.0f);
+	_light.ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	_light.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	return true;
 }
@@ -142,6 +158,12 @@ void TextureShader::ReleaseObjects()
 		_texSamplerState->Release();
 		_texSamplerState = 0;
 	}
+
+	if (_cbPerFrameBuffer)
+	{
+		_cbPerFrameBuffer->Release();
+		_cbPerFrameBuffer = 0;
+	}
 }
 
 bool TextureShader::Render(ID3D11DeviceContext* deviceContext, XMFLOAT4X4 worldMatrix, XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectionMatrix, int indexCount, ID3D11ShaderResourceView* texture)
@@ -159,16 +181,27 @@ bool TextureShader::Render(ID3D11DeviceContext* deviceContext, XMFLOAT4X4 worldM
 bool TextureShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMFLOAT4X4 worldMatrix, XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectionMatrix, ID3D11ShaderResourceView* texture)
 {
 	//Set the World/View/Projection matrix, then send it to constant buffer in effect file
-	XMMATRIX world, view, projection;
+	XMMATRIX worldMat, viewMat, projectionMat;
 
-	world = XMLoadFloat4x4(&worldMatrix);
-	view = XMLoadFloat4x4(&viewMatrix);
-	projection = XMLoadFloat4x4(&projectionMatrix);
+	worldMat = XMLoadFloat4x4(&worldMatrix);
+	viewMat = XMLoadFloat4x4(&viewMatrix);
+	projectionMat = XMLoadFloat4x4(&projectionMatrix);
 
-	XMMATRIX WVP = world * view * projection;
-	XMStoreFloat4x4(&_WVP, XMMatrixTranspose(WVP));
+	_constbuffPerFrame.light = _light;
+	deviceContext->UpdateSubresource(_cbPerFrameBuffer, 0, NULL, &_constbuffPerFrame, 0, 0);
+	deviceContext->PSSetConstantBuffers(0, 1, &_cbPerFrameBuffer);
 
-	_cbPerObj.WVP = _WVP;
+	XMMATRIX WVPMatrix = worldMat * viewMat * projectionMat;
+	
+	XMFLOAT4X4 WVP;
+	XMStoreFloat4x4(&WVP, XMMatrixTranspose(WVPMatrix));
+
+	_cbPerObj.WVP = WVP;
+	
+	XMFLOAT4X4 World;
+	XMStoreFloat4x4(&World, XMMatrixTranspose(worldMat));
+
+	_cbPerObj.World = World;
 
 	deviceContext->UpdateSubresource(_cbPerObjectBuffer, 0, NULL, &_cbPerObj, 0, 0);
 

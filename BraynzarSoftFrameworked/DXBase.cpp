@@ -25,24 +25,35 @@ DXBase::~DXBase()
 {
 }
 
-bool DXBase::Initialize(HWND hwnd, int width, int height, bool fullscreen)
+bool DXBase::Initialize(HWND hwnd, int width, int height, bool fullscreen, bool vsync_enabled)
 {
+	// Store the vsync setting.
+	_vsync_enabled = vsync_enabled;
+
 	// Describe our Buffer
 	DXGI_MODE_DESC bufferDesc;
-
 	ZeroMemory(&bufferDesc, sizeof(DXGI_MODE_DESC));
 
 	bufferDesc.Width = width;
 	bufferDesc.Height = height;
-	bufferDesc.RefreshRate.Numerator = 60;
-	bufferDesc.RefreshRate.Denominator = 1;
 	bufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	bufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	bufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
+	// Set the refresh rate of the back buffer.
+	if (_vsync_enabled)
+	{
+		bufferDesc.RefreshRate.Numerator = 60;
+		bufferDesc.RefreshRate.Denominator = 1;
+	}
+	else
+	{
+		bufferDesc.RefreshRate.Numerator = 0;
+		bufferDesc.RefreshRate.Denominator = 1;
+	}
+
 	// Describe our SwapChain
 	DXGI_SWAP_CHAIN_DESC swapChainDesc;
-
 	ZeroMemory(&swapChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
 
 	swapChainDesc.BufferDesc = bufferDesc;
@@ -63,6 +74,7 @@ bool DXBase::Initialize(HWND hwnd, int width, int height, bool fullscreen)
 		swapChainDesc.Windowed = TRUE;
 	}
 
+	//D3D_FEATURE_LEVEL featurelevel = D3D_FEATURE_LEVEL_11_0;
 	// Create our SwapChain
 	D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, NULL, NULL, NULL,
 		D3D11_SDK_VERSION, &swapChainDesc, &_swapChain, &_device, NULL, &_deviceContext);
@@ -424,7 +436,18 @@ void DXBase::TurnOffAlphaBlending()
 void DXBase::Present()
 {
 	//Present the backbuffer to the screen
-	_swapChain->Present(0, 0);
+	//_swapChain->Present(0, 0);
+
+	if (_vsync_enabled)
+	{
+		// Lock to screen refresh rate.
+		_swapChain->Present(1, 0);
+	}
+	else
+	{
+		// Present as fast as possible.
+		_swapChain->Present(0, 0);
+	}
 }
 
 ID3D11Device* DXBase::GetDevice()

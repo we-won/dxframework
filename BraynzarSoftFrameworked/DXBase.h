@@ -11,7 +11,7 @@ public:
 	DXBase();
 	~DXBase();
 
-	bool Initialize(HWND hwnd, int width, int height, bool fullscreen);
+	bool Initialize(HWND hwnd, int width, int height, bool fullscreen, bool vsync_enabled);
 	void ReleaseObjects();
 	bool InitScene();
 	void Present();
@@ -37,6 +37,7 @@ private:
 	void CreateDisabledAlphaBlendingState();
 
 private:
+	bool _vsync_enabled;
 	HINSTANCE _hInstance;
 	IDXGISwapChain* _swapChain;
 	ID3D11Device* _device;

@@ -158,18 +158,22 @@ bool FontShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, XMFL
 bool FontShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMFLOAT4X4 worldMatrix, XMFLOAT4X4 viewMatrix, XMFLOAT4X4 orthoMatrix, ID3D11ShaderResourceView* texture)
 {
 	//Set the World/View/Projection matrix, then send it to constant buffer in effect file
-	XMMATRIX world, view, projection;
+	//XMMATRIX worldMat, viewMat, projectionMat;
 
-	world = XMLoadFloat4x4(&worldMatrix);
-	//view = XMLoadFloat4x4(&viewMatrix);
-	view = XMMatrixIdentity();
-	//projection = XMLoadFloat4x4(&orthoMatrix);
-	projection = XMMatrixIdentity();
+	//worldMat = XMLoadFloat4x4(&worldMatrix);
+	////viewMat = XMLoadFloat4x4(&viewMatrix);
+	//viewMat = XMMatrixIdentity();
+	////projectionMat = XMLoadFloat4x4(&orthoMatrix);
+	//projectionMat = XMMatrixIdentity();
 
-	XMMATRIX WVP = world * view * projection;
-	XMStoreFloat4x4(&_WVP, XMMatrixTranspose(WVP));
+	//XMMATRIX WVP = worldMat * viewMat * projectionMat;
 
-	_cbPerObj.WVP = _WVP;
+	XMMATRIX WVPMatrix = XMMatrixIdentity();
+
+	XMFLOAT4X4 WVP;
+	XMStoreFloat4x4(&WVP, XMMatrixTranspose(WVPMatrix));
+
+	_cbPerObj.WVP = WVP;
 
 	deviceContext->UpdateSubresource(_cbPerObjectBuffer, 0, NULL, &_cbPerObj, 0, 0);
 

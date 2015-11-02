@@ -2,6 +2,7 @@
 #define _APPLICATION_H_
 
 const bool FULL_SCREEN = false;
+const bool VSYNC_ENABLED = false;
 
 #include "DXBase.h"
 #include "ColorShader.h"
