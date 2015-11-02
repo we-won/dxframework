@@ -13,8 +13,8 @@ System::~System()
 
 bool System::Initialize(HINSTANCE hInstance)
 {
-	int width = 800;	//window width
-	int height = 600;	//window height
+	int width = 0;	//window width
+	int height = 0;	//window height
 
 	InitializeWindows(width, height, hInstance);
 
@@ -31,11 +31,13 @@ bool System::Initialize(HINSTANCE hInstance)
 	return true;
 }
 
-void System::InitializeWindows(int width, int height, HINSTANCE hInstance)
+void System::InitializeWindows(int& width, int& height, HINSTANCE hInstance)
 {
 	//Start creating the window//
 
 	WNDCLASSEX wc;	//Create a new extended windows class
+	DEVMODE dmScreenSettings;
+	int posX, posY;
 
 	// Setup the windows class with default settings.
 	wc.cbSize			= sizeof(WNDCLASSEX);	//Size of our windows class
@@ -53,13 +55,45 @@ void System::InitializeWindows(int width, int height, HINSTANCE hInstance)
 
 	//Register our windows class
 	RegisterClassEx(&wc);
+
+	// Determine the resolution of the clients desktop screen.
+	width = GetSystemMetrics(SM_CXSCREEN);
+	height = GetSystemMetrics(SM_CYSCREEN);
 	
+	// Setup the screen settings depending on whether it is running in full screen or in windowed mode.
+	if (FULL_SCREEN)
+	{
+		// If full screen set the screen to maximum size of the users desktop and 32bit.
+		memset(&dmScreenSettings, 0, sizeof(dmScreenSettings));
+		dmScreenSettings.dmSize = sizeof(dmScreenSettings);
+		dmScreenSettings.dmPelsWidth = (unsigned long)width;
+		dmScreenSettings.dmPelsHeight = (unsigned long)height;
+		dmScreenSettings.dmBitsPerPel = 32;
+		dmScreenSettings.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
+
+		// Change the display settings to full screen.
+		ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN);
+
+		// Set the position of the window to the top left corner.
+		posX = posY = 0;
+	}
+	else
+	{
+		// If windowed then set it to 800x600 resolution.
+		width = 800;
+		height = 600;
+
+		// Place the window in the middle of the screen.
+		posX = (GetSystemMetrics(SM_CXSCREEN) - width) / 2;
+		posY = (GetSystemMetrics(SM_CYSCREEN) - height) / 2;
+	}
+
 	//Create our Extended Window
 	_hwnd = CreateWindowEx(	NULL,	//Extended style
 							_wndClassName,	//Name of our windows class
 							"Window Title",	//Name in the title bar of our window
 							WS_OVERLAPPEDWINDOW,	//style of our window
-							CW_USEDEFAULT, CW_USEDEFAULT,	//Top left corner of window
+							posX, posY,	//Center of our window
 							width,	//Width of our window
 							height,	//Height of our window
 							NULL,	//Handle to parent window
@@ -112,11 +146,9 @@ LRESULT CALLBACK WndProc(HWND hwnd,	UINT msg, WPARAM wParam, LPARAM lParam) //De
 	case WM_KEYDOWN:	//For a key down
 		//if escape key was pressed, display popup box
 		if (wParam == VK_ESCAPE){
-			if (MessageBox(0, "Are you sure you want to exit?",
-				"Really?", MB_YESNO | MB_ICONQUESTION) == IDYES)
-
-				//Release the windows allocated memory  
-				DestroyWindow(hwnd);
+			
+			//Release the windows allocated memory  
+			DestroyWindow(hwnd);
 		}
 		return 0;
 

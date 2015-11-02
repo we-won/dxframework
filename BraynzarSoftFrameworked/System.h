@@ -6,8 +6,6 @@
 
 #include "Application.h"
 
-const bool FULL_SCREEN = false;
-
 class System
 {
 public:
@@ -16,7 +14,7 @@ public:
 
 	//Functions//
 	bool Initialize(HINSTANCE hInstance); //Initialize
-	void InitializeWindows(int width, int height, HINSTANCE hInstance); //Initialize our window
+	void InitializeWindows(int& width, int& height, HINSTANCE hInstance); //Initialize our window
 
 	int MessageLoop();	//Main part of the program
 	void Shutdown();

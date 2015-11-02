@@ -71,8 +71,11 @@
     <ClCompile Include="ColorShader.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="DXBase.cpp" />
+    <ClCompile Include="FontShader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="System.cpp" />
+    <ClCompile Include="TextManager.cpp" />
+    <ClCompile Include="TextureShader.cpp" />
     <ClCompile Include="Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -81,7 +84,10 @@
     <ClInclude Include="ColorShader.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="DXBase.h" />
+    <ClInclude Include="FontShader.h" />
     <ClInclude Include="System.h" />
+    <ClInclude Include="TextManager.h" />
+    <ClInclude Include="TextureShader.h" />
     <ClInclude Include="Triangle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

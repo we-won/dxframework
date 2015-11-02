@@ -1,11 +1,15 @@
 #ifndef _APPLICATION_H_
 #define _APPLICATION_H_
 
+const bool FULL_SCREEN = false;
+
 #include "DXBase.h"
 #include "ColorShader.h"
+#include "TextureShader.h"
+#include "FontShader.h"
 #include "Camera.h"
+#include "TextManager.h"
 
-#include "Triangle.h"
 #include "Cube.h"
 
 class Application
@@ -24,11 +28,14 @@ private:
 private:
 	DXBase* _dxBase;
 	ColorShader* _colorShader;
+	TextureShader* _textureShader;
+	FontShader* _fontShader;
 	Camera* _camera;
 
 	//Displays
-	Triangle* _triangle;
+	TextManager* _text;
 	Cube* _cube;
+	Cube* _cube_2;
 };
 
 #endif

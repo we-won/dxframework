@@ -11,17 +11,31 @@ public:
 	DXBase();
 	~DXBase();
 
-	bool Initialize(HWND hwnd, int width, int height);
+	bool Initialize(HWND hwnd, int width, int height, bool fullscreen);
 	void ReleaseObjects();
 	bool InitScene();
 	void Present();
 
+	void TurnZBufferOn();
+	void TurnZBufferOff();
+	void TurnOnDefaultCulling();
+	void TurnOffDefaultCulling();
+	void TurnOnAlphaBlending();
+	void TurnOffAlphaBlending();
+
 	ID3D11Device* GetDevice();
 	ID3D11DeviceContext* GetDeviceContext();
-
-	XMFLOAT4X4 GetWorldMatrix();
 	XMFLOAT4X4 GetProjectionMatrix();
-	
+	XMFLOAT4X4 GetOrthographicMatrix();
+
+private:
+	void CreateDepthStencilState();
+	void CreateDisabledDepthStencilState();
+	void CreateRasterState();
+	void CreateNoCullRasterState();
+	void CreateEnabledAlphaBlendingState();
+	void CreateDisabledAlphaBlendingState();
+
 private:
 	HINSTANCE _hInstance;
 	IDXGISwapChain* _swapChain;
@@ -30,8 +44,15 @@ private:
 	ID3D11RenderTargetView* _renderTargetView;
 	ID3D11DepthStencilView* _depthStencilView;
 	ID3D11Texture2D* _depthStencilBuffer;
-	XMFLOAT4X4 _world;
+	ID3D11DepthStencilState* _depthStencilState;
+	ID3D11DepthStencilState* _depthDisabledStencilState;
+	ID3D11RasterizerState* _rasterState;
+	ID3D11RasterizerState* _noCullRasterState;
+	ID3D11BlendState* _alphaEnableBlendingState;
+	ID3D11BlendState* _alphaDisableBlendingState;
+
 	XMFLOAT4X4 _projection;
+	XMFLOAT4X4 _ortho;
 
 	float _red, _green, _blue;
 	int _colormodr, _colormodg, _colormodb;

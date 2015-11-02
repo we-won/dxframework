@@ -21,14 +21,14 @@ bool ColorShader::Initialize(ID3D11Device* device)
 	ID3D10Blob* _PS_Buffer;
 
 	//Compile Shaders from shader file
-	hr = D3DX11CompileFromFile("Effects.fx", 0, 0, "VS", "vs_4_0", 0, 0, 0, &_VS_Buffer, 0, 0);
+	hr = D3DX11CompileFromFile("ColorEffects.fx", 0, 0, "VS", "vs_4_0", 0, 0, 0, &_VS_Buffer, 0, 0);
 	if (FAILED(hr))
 	{
 		MessageBox(0, "Error loading vertex shader!", "Compile Error", MB_OK);
 		return false;
 	}
 
-	hr = D3DX11CompileFromFile("Effects.fx", 0, 0, "PS", "ps_4_0", 0, 0, 0, &_PS_Buffer, 0, 0);
+	hr = D3DX11CompileFromFile("ColorEffects.fx", 0, 0, "PS", "ps_4_0", 0, 0, 0, &_PS_Buffer, 0, 0);
 	if (FAILED(hr))
 	{
 		MessageBox(0, "Error loading pixel shader!", "Compile Error", MB_OK);
@@ -106,7 +106,7 @@ void ColorShader::ReleaseObjects()
 	if (_PS)
 	{
 		_PS->Release();
-		_vertLayout->Release();
+		_PS = 0;
 	}
 	
 	if (_vertLayout)

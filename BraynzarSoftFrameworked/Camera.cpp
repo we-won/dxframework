@@ -15,7 +15,8 @@ bool Camera::Render()
 	XMVECTOR camPosition, camTarget, camUp;
 
 	//Camera information
-	_camPosition = XMFLOAT4(0.0f, 0.0f, -0.5f, 0.0f);
+	_camPosition = XMFLOAT4(0.0f, 3.0f, -8.0f, 0.0f);
+	//_camPosition = XMFLOAT4(0.0f, 0.0f, -1.0f, 0.0f);
 	_camTarget = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	_camUp = XMFLOAT4(0.0f, 1.0f, 0.0f, 0.0f);
 
