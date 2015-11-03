@@ -20,6 +20,8 @@ public:
 	void Shutdown();
 	void ShutdownWindows(); 
 
+	LRESULT CALLBACK MessageHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 private:
 	LPCTSTR _wndClassName;
 	HWND _hwnd;
@@ -28,5 +30,7 @@ private:
 };
 
 LRESULT CALLBACK WndProc(HWND hWnd,	UINT msg, WPARAM wParam, LPARAM lParam); //Windows callback procedure
+
+static System* ApplicationHandle = 0;
 
 #endif

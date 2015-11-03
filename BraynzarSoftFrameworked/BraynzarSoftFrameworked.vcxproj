@@ -72,6 +72,7 @@
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="DXBase.cpp" />
     <ClCompile Include="FontShader.cpp" />
+    <ClCompile Include="InputLx.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="System.cpp" />
     <ClCompile Include="TextManager.cpp" />
@@ -86,6 +87,7 @@
     <ClInclude Include="Cube.h" />
     <ClInclude Include="DXBase.h" />
     <ClInclude Include="FontShader.h" />
+    <ClInclude Include="InputLx.h" />
     <ClInclude Include="System.h" />
     <ClInclude Include="TextManager.h" />
     <ClInclude Include="TextureShader.h" />

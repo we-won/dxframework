@@ -9,6 +9,7 @@ Application::Application()
 	_fontShader = 0;
 	_camera = 0;
 	_timer = 0;
+	_input = 0;
 
 	_text = 0;
 	_cube = 0;
@@ -73,6 +74,17 @@ bool Application::Initialize(HINSTANCE hInstance, HWND hwnd, int width, int heig
 	}
 
 	if (!_timer->Initialize())
+	{
+		return false;
+	}
+
+	_input = new InputLx;
+	if (!_input)
+	{
+		return false;
+	}
+
+	if (!_input->Initialize())
 	{
 		return false;
 	}
@@ -155,6 +167,12 @@ void Application::Shutdown()
 		_timer = 0;
 	}
 
+	if (_input)
+	{
+		delete _input;
+		_input = 0;
+	}
+
 	if (_text)
 	{
 		_text->ReleaseObjects();
@@ -177,14 +195,22 @@ void Application::Shutdown()
 	}
 }
 
+void Application::HandleInput(LPARAM lParam)
+{
+	_input->GetData(lParam);
+}
+
 bool Application::Frame()
 {
 	bool result;
 
 	_timer->Frame();
-
-	_cube->Spin(_timer->GetTime());
-	//_cube_2->Rotate(_timer->GetTime());
+	
+	if (_input->IsRightMouseButtonDown())
+		_cube->Spin(_timer->GetTime());
+	
+	if (_input->IsLeftMouseButtonDown())
+		_cube_2->Rotate(_timer->GetTime());
 
 	// Render the graphics.
 	result = RenderGraphics();

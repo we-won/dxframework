@@ -41,6 +41,9 @@ void System::InitializeWindows(int& width, int& height, HINSTANCE hInstance)
 	DEVMODE dmScreenSettings;
 	int posX, posY;
 
+	// Get an external pointer to this object.	
+	ApplicationHandle = this;
+
 	// Setup the windows class with default settings.
 	wc.cbSize			= sizeof(WNDCLASSEX);	//Size of our windows class
 	wc.style			= CS_HREDRAW | CS_VREDRAW;	//class styles
@@ -139,27 +142,41 @@ int System::MessageLoop(){	//The message loop
 
 }
 
+LRESULT CALLBACK System::MessageHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	//return the message for windows to handle it
+	switch (msg)
+	{
+		case WM_KEYDOWN:	//For a key down
+			//if escape key was pressed, display popup box
+			if (wParam == VK_ESCAPE)
+			{
+				//Release the windows allocated memory  
+				DestroyWindow(hwnd);
+			}
+			return 0;
+
+		case WM_INPUT:
+			_application->HandleInput(lParam);
+			return 0;
+	}
+
+	return DefWindowProc(hwnd, msg, wParam, lParam);
+}
 
 LRESULT CALLBACK WndProc(HWND hwnd,	UINT msg, WPARAM wParam, LPARAM lParam) //Default windows procedure
 {
 	switch (msg)	//Check message
 	{
+		case WM_CLOSE:
+		case WM_DESTROY:	//if x button in top right was pressed
+			PostQuitMessage(0);
+			return 0;
 
-	case WM_KEYDOWN:	//For a key down
-		//if escape key was pressed, display popup box
-		if (wParam == VK_ESCAPE){
-			
-			//Release the windows allocated memory  
-			DestroyWindow(hwnd);
-		}
-		return 0;
-
-	case WM_DESTROY:	//if x button in top right was pressed
-		PostQuitMessage(0);
-		return 0;
+		default:
+			return ApplicationHandle->MessageHandler(hwnd, msg, wParam, lParam);
+		
 	}
-	//return the message for windows to handle it
-	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
 void System::Shutdown()
@@ -173,8 +190,6 @@ void System::Shutdown()
 
 	// Shutdown the window.
 	ShutdownWindows();
-
-	return;
 }
 
 void System::ShutdownWindows()
@@ -192,9 +207,6 @@ void System::ShutdownWindows()
 	DestroyWindow(_hwnd);
 	_hwnd = NULL;
 
-	// Remove the application instance.
-	//UnregisterClass(_wndClassName, m_hinstance);
-	//m_hinstance = NULL;
-
-	return;
+	// Release the pointer to this class.
+	ApplicationHandle = NULL;
 }

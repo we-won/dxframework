@@ -10,6 +10,7 @@ const bool VSYNC_ENABLED = false;
 #include "FontShader.h"
 #include "Camera.h"
 #include "TimerLx.h"
+#include "InputLx.h"
 
 #include "TextManager.h"
 #include "Cube.h"
@@ -24,6 +25,8 @@ public:
 	void Shutdown();
 	bool Frame();
 
+	void HandleInput(LPARAM lParam);
+
 private:
 	bool RenderGraphics();
 
@@ -34,6 +37,7 @@ private:
 	FontShader* _fontShader;
 	Camera* _camera;
 	TimerLx* _timer;
+	InputLx* _input;
 
 	//Displays
 	TextManager* _text;
