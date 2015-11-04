@@ -1,0 +1,16 @@
+﻿Build started 11/4/2015 2:37:36 AM.
+     1>Project "C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\LubiEngine\LubiEngine.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Debug\LubiEngine.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /wd4005 /analyze- /errorReport:prompt Camera.cpp
+         Camera.cpp
+     1>c:\users\tinotech\documents\visual studio 2010\projects\dxframework\lubiengine\camera.cpp(27): error C2678: binary '+' : no operator found which takes a left-hand operand of type 'XMFLOAT4' (or there is no acceptable conversion)
+                 c:\program files\microsoft directx sdk (june 2010)\include\xnamath.h(319): could be 'XMVECTOR operator +(FXMVECTOR,FXMVECTOR)'
+                 c:\program files\microsoft directx sdk (june 2010)\include\xnamath.h(309): or       'XMVECTOR operator +(FXMVECTOR)'
+                 while trying to match the argument list '(XMFLOAT4, XMFLOAT4)'
+     1>Done Building Project "C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\LubiEngine\LubiEngine.vcxproj" (build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:01.67
