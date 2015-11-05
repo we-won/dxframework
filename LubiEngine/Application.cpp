@@ -3,7 +3,7 @@
 
 Application::Application()
 	: m_dxBase(0), m_colorShader(0), m_textureShader(0), m_fontShader(0), m_camera(0), m_timer(0), m_input(0),
-		m_text(0), m_cube(0), m_cube_2(0)
+		m_terrain(0), m_text(0), m_cube(0), m_cube_2(0)
 {
 }
 
@@ -76,6 +76,17 @@ bool Application::Initialize(HINSTANCE hInstance, HWND hwnd, int width, int heig
 	}
 
 	if (!m_input->Initialize())
+	{
+		return false;
+	}
+
+	m_terrain = new Terrain;
+	if (!m_terrain)
+	{
+		return false;
+	}
+
+	if (!m_terrain->Initialize(m_dxBase->GetDevice(), m_dxBase->GetDeviceContext()))
 	{
 		return false;
 	}
@@ -164,6 +175,13 @@ void Application::Shutdown()
 		m_input = 0;
 	}
 
+	if (m_terrain)
+	{
+		m_terrain->ReleaseObjects();
+		delete m_terrain;
+		m_terrain = 0;
+	}
+
 	if (m_text)
 	{
 		m_text->ReleaseObjects();
@@ -197,12 +215,10 @@ bool Application::Frame()
 
 	m_timer->Frame();
 	
-	if (m_input->IsArrowKeyDown(VKey_LeftArrow - 0x25)) {
+	/*if (m_input->IsArrowKeyDown(VKey_LeftArrow - 0x25)) {
 		m_camera->MoveLeft(m_timer->GetTime());
-	}
+	}*/
 		
-		
-
 	m_cube->Spin(m_timer->GetTime());
 	m_cube_2->Rotate(m_timer->GetTime());
 
@@ -236,6 +252,16 @@ bool Application::RenderGraphics()
 	viewMatrix = m_camera->GetViewMatrix();
 	projectionMatrix = m_dxBase->GetProjectionMatrix();
 	orthographicMatrix = m_dxBase->GetOrthographicMatrix();
+
+	//Terrain
+	worldMatrix = m_terrain->GetWorldMatrix();
+
+	m_terrain->Render(m_dxBase->GetDeviceContext());
+	result = m_textureShader->Render(m_dxBase->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, m_terrain->GetIndexCount(), m_terrain->GetTexture());
+	if (!result)
+	{
+		return false;
+	}
 
 	//First Cube
 	worldMatrix = m_cube->GetWorldMatrix();

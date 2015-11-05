@@ -12,6 +12,7 @@ const bool VSYNC_ENABLED = false;
 #include "TimerLx.h"
 #include "InputLx.h"
 
+#include "Terrain.h"
 #include "TextManager.h"
 #include "Cube.h"
 
@@ -40,6 +41,7 @@ private:
 	InputLx* m_input;
 
 	//Displays
+	Terrain* m_terrain;
 	TextManager* m_text;
 	Cube* m_cube;
 	Cube* m_cube_2;

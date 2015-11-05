@@ -1,16 +1,45 @@
-﻿Build started 11/4/2015 2:37:36 AM.
+﻿Build started 11/5/2015 4:41:31 AM.
      1>Project "C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\LubiEngine\LubiEngine.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\LubiEngine.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
-         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /wd4005 /analyze- /errorReport:prompt Camera.cpp
-         Camera.cpp
-     1>c:\users\tinotech\documents\visual studio 2010\projects\dxframework\lubiengine\camera.cpp(27): error C2678: binary '+' : no operator found which takes a left-hand operand of type 'XMFLOAT4' (or there is no acceptable conversion)
-                 c:\program files\microsoft directx sdk (june 2010)\include\xnamath.h(319): could be 'XMVECTOR operator +(FXMVECTOR,FXMVECTOR)'
-                 c:\program files\microsoft directx sdk (june 2010)\include\xnamath.h(309): or       'XMVECTOR operator +(FXMVECTOR)'
-                 while trying to match the argument list '(XMFLOAT4, XMFLOAT4)'
-     1>Done Building Project "C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\LubiEngine\LubiEngine.vcxproj" (build target(s)) -- FAILED.
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /wd4005 /analyze- /errorReport:prompt DXBase.cpp
+         DXBase.cpp
+       Link:
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\Debug\LubiEngine.exe" /NOLOGO d3d11.lib d3dx11.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\LubiEngine.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\Debug\LubiEngine.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\Debug\LubiEngine.lib" /MACHINE:X86 Debug\Application.obj
+         Debug\Camera.obj
+         Debug\ColorShader.obj
+         Debug\Cube.obj
+         Debug\DXBase.obj
+         Debug\FontShader.obj
+         Debug\InputLx.obj
+         Debug\main.obj
+         Debug\System.obj
+         Debug\Terrain.obj
+         Debug\TextManager.obj
+         Debug\TextureShader.obj
+         Debug\TimerLx.obj
+         Debug\Triangle.obj
+         LINK : C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\Debug\LubiEngine.exe not found or not built by the last incremental link; performing full link
+     1>Triangle.obj : warning LNK4099: PDB 'vc100.pdb' was not found with 'Triangle.obj' or at 'C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\Debug\vc100.pdb'; linking object as if no debug info
+     1>TimerLx.obj : warning LNK4099: PDB 'vc100.pdb' was not found with 'TimerLx.obj' or at 'C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\Debug\vc100.pdb'; linking object as if no debug info
+     1>TextureShader.obj : warning LNK4099: PDB 'vc100.pdb' was not found with 'TextureShader.obj' or at 'C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\Debug\vc100.pdb'; linking object as if no debug info
+     1>TextManager.obj : warning LNK4099: PDB 'vc100.pdb' was not found with 'TextManager.obj' or at 'C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\Debug\vc100.pdb'; linking object as if no debug info
+     1>System.obj : warning LNK4099: PDB 'vc100.pdb' was not found with 'System.obj' or at 'C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\Debug\vc100.pdb'; linking object as if no debug info
+     1>main.obj : warning LNK4099: PDB 'vc100.pdb' was not found with 'main.obj' or at 'C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\Debug\vc100.pdb'; linking object as if no debug info
+     1>InputLx.obj : warning LNK4099: PDB 'vc100.pdb' was not found with 'InputLx.obj' or at 'C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\Debug\vc100.pdb'; linking object as if no debug info
+     1>FontShader.obj : warning LNK4099: PDB 'vc100.pdb' was not found with 'FontShader.obj' or at 'C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\Debug\vc100.pdb'; linking object as if no debug info
+     1>Cube.obj : warning LNK4099: PDB 'vc100.pdb' was not found with 'Cube.obj' or at 'C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\Debug\vc100.pdb'; linking object as if no debug info
+     1>ColorShader.obj : warning LNK4099: PDB 'vc100.pdb' was not found with 'ColorShader.obj' or at 'C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\Debug\vc100.pdb'; linking object as if no debug info
+     1>Camera.obj : warning LNK4099: PDB 'vc100.pdb' was not found with 'Camera.obj' or at 'C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\Debug\vc100.pdb'; linking object as if no debug info
+         LubiEngine.vcxproj -> C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\Debug\LubiEngine.exe
+       Manifest:
+         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\Debug\LubiEngine.exe;#1" /manifest Debug\LubiEngine.exe.intermediate.manifest
+       FinalizeBuildStatus:
+         Deleting file "Debug\LubiEngine.unsuccessfulbuild".
+         Touching "Debug\LubiEngine.lastbuildstate".
+     1>Done Building Project "C:\Users\Tinotech\Documents\Visual Studio 2010\Projects\dxframework\LubiEngine\LubiEngine.vcxproj" (build target(s)).
 
-Build FAILED.
+Build succeeded.
 
-Time Elapsed 00:00:01.67
+Time Elapsed 00:00:02.17

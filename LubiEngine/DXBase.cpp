@@ -142,6 +142,8 @@ bool DXBase::Initialize(HWND hwnd, int width, int height, bool fullscreen, bool 
 
 	CreateDisabledAlphaBlendingState();
 
+	TurnOnDefaultCulling();
+
 	// Set the Projection matrix
 	XMMATRIX projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, (float)width / height, 0.1f, 1000.0f);
 	XMStoreFloat4x4(&m_projection, projection);
@@ -225,7 +227,7 @@ void DXBase::CreateRasterState()
 	rasterDesc.DepthClipEnable = TRUE;
 	rasterDesc.FillMode = D3D11_FILL_SOLID;
 	rasterDesc.FrontCounterClockwise = FALSE;
-	rasterDesc.MultisampleEnable = FALSE;
+	rasterDesc.MultisampleEnable = TRUE;
 	rasterDesc.ScissorEnable = FALSE;
 	rasterDesc.SlopeScaledDepthBias = 0.0f;
 
