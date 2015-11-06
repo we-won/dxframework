@@ -2,11 +2,10 @@
 
 
 System::System()
-	: m_application(0)
+: m_application(0), m_hwnd(NULL)
 {
 	m_wndTitle = "Lubi Engine";
 	m_wndClassName = "lubiengine";
-	m_hwnd = NULL;
 }
 
 

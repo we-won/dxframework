@@ -156,6 +156,15 @@ void Cube::ReleaseObjects()
 	}
 }
 
+void Cube::MoveTo(float x, float z)
+{
+	XMMATRIX Translation = XMMatrixTranslation(x, 0.0f, z);
+
+	//Set cube1's world space using the transformations
+	XMMATRIX cubeWorld = Translation;
+	XMStoreFloat4x4(&_world, cubeWorld);
+}
+
 bool Cube::Rotate(float time)
 {
 	//Keep the cubes rotating
@@ -167,10 +176,10 @@ bool Cube::Rotate(float time)
 	//Define cube1's world space matrix
 	XMVECTOR rotaxis = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	XMMATRIX Rotation = XMMatrixRotationAxis(rotaxis, _rot);
-	XMMATRIX Translation = XMMatrixTranslation(0.0f, 0.0f, 4.0f);
+	XMMATRIX Translation = XMMatrixTranslation(0.0f, 0.0f, 0.0f);
 
 	//Set cube1's world space using the transformations
-	XMMATRIX cubeWorld = Translation * Rotation;
+	XMMATRIX cubeWorld = Translation;
 	XMStoreFloat4x4(&_world, cubeWorld);
 
 	return true;
@@ -187,10 +196,11 @@ bool Cube::Spin(float time)
 	//Define cube2's world space matrix
 	XMVECTOR rotaxis = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	XMMATRIX Rotation = XMMatrixRotationAxis(rotaxis, -_rot);
+	XMMATRIX Translation = XMMatrixTranslation(0.0f, 0.0f, 0.0f);
 	XMMATRIX Scale = XMMatrixScaling(1.3f, 1.3f, 1.3f);
 
 	//Set cube2's world space matrix
-	XMMATRIX cubeWorld = Rotation * Scale;
+	XMMATRIX cubeWorld = Rotation * Translation * Scale;
 	XMStoreFloat4x4(&_world, cubeWorld);
 
 	return true;

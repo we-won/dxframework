@@ -20,6 +20,9 @@ public:
 
 	XMFLOAT4X4 GetViewMatrix() { return m_view; }
 
+	float GetCamPosX() { return m_camPosition.x; }
+	float GetCamPosZ() { return m_camPosition.z; }
+
 private:
 	XMFLOAT4 m_camPosition;
 	XMFLOAT4 m_camTarget;

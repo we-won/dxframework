@@ -28,9 +28,11 @@ public:
 
 	bool Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	void ReleaseObjects();
+	void Render(ID3D11DeviceContext* deviceContext);
+
+	void MoveTo(float x, float z);
 	bool Spin(float time);
 	bool Rotate(float time);
-	void Render(ID3D11DeviceContext* deviceContext);
 
 	int GetIndexCount();
 	XMFLOAT4X4 GetWorldMatrix();

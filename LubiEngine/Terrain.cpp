@@ -32,24 +32,24 @@ bool Terrain::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContex
 		for( int y = 0; y < m_terrain.y; ++y )
 		{
 			// lower left
-			vertices[index_v] = Vertex(0.0f + x, -1.0f, 0.0f + y, 0.0f, 1.0f, -1.0f, -1.0f, -1.0f);
+			vertices[index_v] = Vertex(0.0f + x, -2.0f, 0.0f + y, 0.0f, 1.0f, -1.0f, -1.0f, -1.0f);
 			indices[index_i] = index_v;
 			indices[index_i + 3] = index_v;
 			++index_v;
 
 			// lower right
-			vertices[index_v] = Vertex(0.0f + x, -1.0f, 1.0f + y, 0.0f, 0.0f, -1.0f, +1.0f, -1.0f);
+			vertices[index_v] = Vertex(0.0f + x, -2.0f, 1.0f + y, 0.0f, 0.0f, -1.0f, +1.0f, -1.0f);
 			indices[index_i + 1] = index_v;
 			++index_v;
 
 			// upper right
-			vertices[index_v] = Vertex(1.0f + x, -1.0f, 1.0f + y, 1.0f, 0.0f, +1.0f, +1.0f, -1.0f);
+			vertices[index_v] = Vertex(1.0f + x, -2.0f, 1.0f + y, 1.0f, 0.0f, +1.0f, +1.0f, -1.0f);
 			indices[index_i + 2] = index_v;
 			indices[index_i + 4] = index_v;
 			++index_v;
 
 			// upper left
-			vertices[index_v] = Vertex(1.0f + x, -1.0f, 0.0f + y, 1.0f, 1.0f, +1.0f, -1.0f, -1.0f);
+			vertices[index_v] = Vertex(1.0f + x, -2.0f, 0.0f + y, 1.0f, 1.0f, +1.0f, -1.0f, -1.0f);
 			indices[index_i + 5] = index_v;
 			++index_v;
 
@@ -91,7 +91,7 @@ bool Terrain::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContex
 	}
 
 	// Create a texture sampler state description.
-	hr = D3DX11CreateShaderResourceViewFromFile(device, "seamless_sand.jpg", NULL, NULL, &m_texture, NULL);
+	hr = D3DX11CreateShaderResourceViewFromFile(device, "grass.jpg", NULL, NULL, &m_texture, NULL);
 	if (FAILED(hr))
 	{
 		return false;

@@ -75,7 +75,7 @@ bool Application::Initialize(HINSTANCE hInstance, HWND hwnd, int width, int heig
 		return false;
 	}
 
-	if (!m_input->Initialize())
+	if (!m_input->Initialize(hwnd))
 	{
 		return false;
 	}
@@ -215,12 +215,66 @@ bool Application::Frame()
 
 	m_timer->Frame();
 	
-	/*if (m_input->IsArrowKeyDown(VKey_LeftArrow - 0x25)) {
+	if (m_input->IsArrowKeyDown(VKey_LeftArrow - 0x25)) {
 		m_camera->MoveLeft(m_timer->GetTime());
-	}*/
+	}
+
+	if (m_input->IsArrowKeyDown(VKey_RightArrow - 0x25)) {
+		m_camera->MoveRight(m_timer->GetTime());
+	}
+
+	if (m_input->IsArrowKeyDown(VKey_UpArrow - 0x25)) {
+		m_camera->MoveUp(m_timer->GetTime());
+	}
+
+	if (m_input->IsArrowKeyDown(VKey_DownArrow - 0x25)) {
+		m_camera->MoveDown(m_timer->GetTime());
+	}
+
+	if (m_input->IsRightMouseButtonDown()) {
+
+		int mouseX = m_input->GetMouseCoorX();
+		int mouseY = m_input->GetMouseCoorY();
+		float ClientWidth = 800.0f;
+		float ClientHeight = 600.0f;
+
+		
+
+		
+		
+		m_camera->Render();
+		
+		XMMATRIX viewMatrix, projectionMatrix, worldMatrix;
+		viewMatrix = XMLoadFloat4x4(&m_camera->GetViewMatrix());
+		projectionMatrix = XMLoadFloat4x4(&m_dxBase->GetProjectionMatrix());
+		worldMatrix = XMMatrixIdentity();
+
+		float x, y;
+
+		//Transform 2D pick position on screen space to 3D ray in View space
+		x = (((2.0f * mouseX) / ClientWidth) - 1);
+		y = -(((2.0f * mouseY) / ClientHeight) - 1);
+		
+		XMVECTOR v0, v1;
+		XMVECTOR rayPos, rayDir;
+		v0 = XMVectorSet(mouseX, mouseY, 0, 0);
+		v1 = XMVectorSet(mouseX, mouseY, 1, 0);
+
+		rayPos = XMVector3Unproject(v0, 0, 0, 800.0f, 600.0f, 0.0f, 1.0f, projectionMatrix, viewMatrix, worldMatrix);
+		rayDir = XMVector3Unproject(v1, 0, 0, 800.0f, 600.0f, 0.0f, 1.0f, projectionMatrix, viewMatrix, worldMatrix);
+
+		rayDir -= rayPos;
+		rayDir = XMVector3Normalize(rayDir);
+
+		XMVECTOR wPos;
+
+		wPos = XMVectorSet(XMVectorGetX(rayPos) + XMVectorGetX(rayDir), XMVectorGetY(rayPos) + XMVectorGetY(rayDir), 0, 0);
+
+		m_cube_2->MoveTo(XMVectorGetX(wPos), XMVectorGetY(wPos));
+	}
 		
 	m_cube->Spin(m_timer->GetTime());
-	m_cube_2->Rotate(m_timer->GetTime());
+	//m_cube_2->Rotate(m_timer->GetTime());
 
 	// Render the graphics.
 	result = RenderGraphics();

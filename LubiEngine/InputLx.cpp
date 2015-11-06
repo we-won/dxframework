@@ -22,8 +22,10 @@ void InputLx::ResetAllKeyData()
 
 }
 
-bool InputLx::Initialize()
+bool InputLx::Initialize(HWND hwnd)
 {
+	m_hwnd = hwnd;
+
 	// Keyboard
 	m_Rid[0].usUsagePage = 1;
 	m_Rid[0].usUsage = 6;
@@ -57,12 +59,20 @@ void InputLx::GetData(LPARAM lParam)
 
 	// The mouse has not been tested extensively,
 	// but I believe it works.
+
+	POINT mousePos;
+
+	GetCursorPos(&mousePos);
+	ScreenToClient(m_hwnd, &mousePos);
+
+	m_nMouseX = mousePos.x;
+	m_nMouseY = mousePos.y;
+
 	if (raw->header.dwType == RIM_TYPEMOUSE)
 	{
 		// Get values from the mouse member (of type RAWMOUSE)
 		m_nMouseXChange = raw->data.mouse.lLastX;
 		m_nMouseYChange = raw->data.mouse.lLastY;
-
 
 
 		bool bStateDown = (raw->data.mouse.usButtonFlags & RI_MOUSE_LEFT_BUTTON_DOWN) != 0;

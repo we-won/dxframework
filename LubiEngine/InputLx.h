@@ -50,7 +50,7 @@ public:
 	// Only call this once when your Application begins.
 	// I may be wrong, but I saw nothing from what I read that indicated
 	// devices need to be unregistered.
-	bool Initialize();
+	bool Initialize(HWND hwnd);
 
 	// Everytime your MsgProc's uMsg is WM_INPUT, you will want to call the GetData function.
 	// I believe this is smarter than calling it every frame in a game loop.
@@ -73,7 +73,7 @@ public:
 	// To obtain exact mouse coords check the uMsg in your Application's MsgProc
 	// for WM_MOUSEMOVE, and use HIWORD() LOWORD() functions to extract the mouse X,Y
 	// from lParam. Store them in the below variables.
-	int GetMouseCoorx() { return m_nMouseX; }
+	int GetMouseCoorX() { return m_nMouseX; }
 	int GetMouseCoorY() { return m_nMouseY; }
 
 	// Alphabetic as in any letter from the Alphabet. So IsAlphabeticKeyDown returns
@@ -136,6 +136,8 @@ private:
 	// to access.
 	bool m_baAlphabet[25];
 	bool m_baArrows[4];
+
+	HWND m_hwnd;
 };
 
 #endif
