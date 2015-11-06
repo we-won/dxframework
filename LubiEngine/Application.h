@@ -32,6 +32,7 @@ private:
 	bool RenderGraphics();
 
 private:
+	float m_width, m_height;
 	DXBase* m_dxBase;
 	ColorShader* m_colorShader;
 	TextureShader* m_textureShader;
@@ -40,11 +41,19 @@ private:
 	TimerLx* m_timer;
 	InputLx* m_input;
 
+	XMFLOAT4X4 m_worldMatrix;
+	XMFLOAT4X4 m_viewMatrix; 
+	XMFLOAT4X4 m_projectionMatrix;
+	XMFLOAT4X4 m_orthographicMatrix;
+
 	//Displays
 	Terrain* m_terrain;
 	TextManager* m_text;
 	Cube* m_cube;
 	Cube* m_cube_2;
+
+	//Mouse Test
+	bool rightClickState;
 };
 
 #endif

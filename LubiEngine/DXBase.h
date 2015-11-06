@@ -25,6 +25,8 @@ public:
 
 	ID3D11Device* GetDevice() { return m_device; }
 	ID3D11DeviceContext* GetDeviceContext() { return m_deviceContext; }
+	
+	XMFLOAT4X4 GetWorldMatrix() { return m_world; }
 	XMFLOAT4X4 GetProjectionMatrix() { return m_projection; }
 	XMFLOAT4X4 GetOrthographicMatrix() { return m_ortho; }
 
@@ -52,6 +54,7 @@ private:
 	ID3D11BlendState* m_alphaEnableBlendingState;
 	ID3D11BlendState* m_alphaDisableBlendingState;
 
+	XMFLOAT4X4 m_world;
 	XMFLOAT4X4 m_projection;
 	XMFLOAT4X4 m_ortho;
 };

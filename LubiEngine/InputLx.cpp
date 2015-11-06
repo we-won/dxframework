@@ -57,16 +57,17 @@ void InputLx::GetData(LPARAM lParam)
 
 	RAWINPUT *raw = (RAWINPUT*)m_buffer;
 
-	// The mouse has not been tested extensively,
-	// but I believe it works.
-
+	
+	// Get mouse position
 	POINT mousePos;
-
 	GetCursorPos(&mousePos);
 	ScreenToClient(m_hwnd, &mousePos);
 
 	m_nMouseX = mousePos.x;
 	m_nMouseY = mousePos.y;
+
+	// The mouse has not been tested extensively,
+	// but I believe it works.
 
 	if (raw->header.dwType == RIM_TYPEMOUSE)
 	{

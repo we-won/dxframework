@@ -3,7 +3,8 @@
 
 Application::Application()
 	: m_dxBase(0), m_colorShader(0), m_textureShader(0), m_fontShader(0), m_camera(0), m_timer(0), m_input(0),
-		m_terrain(0), m_text(0), m_cube(0), m_cube_2(0)
+		m_terrain(0), m_text(0), m_cube(0), m_cube_2(0),
+		rightClickState(0)
 {
 }
 
@@ -14,6 +15,9 @@ Application::~Application()
 
 bool Application::Initialize(HINSTANCE hInstance, HWND hwnd, int width, int height)
 {
+	m_width = (float)width;
+	m_height = (float)height;
+
 	m_dxBase = new DXBase;
 	if (!m_dxBase)
 	{
@@ -130,6 +134,11 @@ bool Application::Initialize(HINSTANCE hInstance, HWND hwnd, int width, int heig
 		return false;
 	}
 
+	if (!m_camera->Render())
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -213,70 +222,67 @@ bool Application::Frame()
 {
 	bool result;
 
+	// Get global matrices
+	m_worldMatrix = m_dxBase->GetWorldMatrix();
+	m_viewMatrix = m_camera->GetViewMatrix();
+	m_projectionMatrix = m_dxBase->GetProjectionMatrix();
+	m_orthographicMatrix = m_dxBase->GetOrthographicMatrix();
+
 	m_timer->Frame();
 	
-	if (m_input->IsArrowKeyDown(VKey_LeftArrow - 0x25)) {
+	if (m_input->IsArrowKeyDown(VKey_LeftArrow - 0x25)) 
+	{
 		m_camera->MoveLeft(m_timer->GetTime());
 	}
 
-	if (m_input->IsArrowKeyDown(VKey_RightArrow - 0x25)) {
+	if (m_input->IsArrowKeyDown(VKey_RightArrow - 0x25)) 
+	{
 		m_camera->MoveRight(m_timer->GetTime());
 	}
 
-	if (m_input->IsArrowKeyDown(VKey_UpArrow - 0x25)) {
+	if (m_input->IsArrowKeyDown(VKey_UpArrow - 0x25)) 
+	{
 		m_camera->MoveUp(m_timer->GetTime());
 	}
 
-	if (m_input->IsArrowKeyDown(VKey_DownArrow - 0x25)) {
+	if (m_input->IsArrowKeyDown(VKey_DownArrow - 0x25)) 
+	{
 		m_camera->MoveDown(m_timer->GetTime());
 	}
 
-	if (m_input->IsRightMouseButtonDown()) {
+	if (m_input->IsRightMouseButtonDown()) 
+	{
+		if (rightClickState == 0)
+		{
+			float mouseX = (float)m_input->GetMouseCoorX();
+			float mouseY = (float)m_input->GetMouseCoorY();
 
-		int mouseX = m_input->GetMouseCoorX();
-		int mouseY = m_input->GetMouseCoorY();
-		float ClientWidth = 800.0f;
-		float ClientHeight = 600.0f;
+			XMMATRIX viewMatrix = XMLoadFloat4x4(&m_viewMatrix);
+			XMMATRIX projectionMatrix = XMLoadFloat4x4(&m_projectionMatrix);
+			XMMATRIX worldMatrix = XMLoadFloat4x4(&m_worldMatrix);
 
-		
+			XMVECTOR v0 = XMVectorSet(mouseX, mouseY, 0.0f, 0);
+			XMVECTOR v1 = XMVectorSet(mouseX, mouseY, 1.0f, 0);
 
-		
-		
-		m_camera->Render();
-		
-		XMMATRIX viewMatrix, projectionMatrix, worldMatrix;
-		viewMatrix = XMLoadFloat4x4(&m_camera->GetViewMatrix());
-		projectionMatrix = XMLoadFloat4x4(&m_dxBase->GetProjectionMatrix());
-		worldMatrix = XMMatrixIdentity();
+			XMVECTOR rayPos = XMVector3Unproject(v0, 0, 0, m_width, m_height, 0.0f, 1.0f, projectionMatrix, viewMatrix, worldMatrix);
+			XMVECTOR rayDir = XMVector3Unproject(v1, 0, 0, m_width, m_height, 0.0f, 1.0f, projectionMatrix, viewMatrix, worldMatrix);
 
-		float x, y;
+			float point3dX = ( ( 0.0f - XMVectorGetY(rayPos) ) * ( XMVectorGetX(rayDir) - XMVectorGetX(rayPos) ) ) / ( XMVectorGetY(rayDir) - XMVectorGetY(rayPos) ) + XMVectorGetX(rayPos);
+			float point3dY = ( ( 0.0f - XMVectorGetY(rayPos) ) * ( XMVectorGetZ(rayDir) - XMVectorGetZ(rayPos) ) ) / ( XMVectorGetY(rayDir) - XMVectorGetY(rayPos) ) + XMVectorGetZ(rayPos);
 
-		//Transform 2D pick position on screen space to 3D ray in View space
-		x = (((2.0f * mouseX) / ClientWidth) - 1);
-		y = -(((2.0f * mouseY) / ClientHeight) - 1);
-		
-		XMVECTOR v0, v1;
-		XMVECTOR rayPos, rayDir;
-		v0 = XMVectorSet(mouseX, mouseY, 0, 0);
-		v1 = XMVectorSet(mouseX, mouseY, 1, 0);
-
-		rayPos = XMVector3Unproject(v0, 0, 0, 800.0f, 600.0f, 0.0f, 1.0f, projectionMatrix, viewMatrix, worldMatrix);
-		rayDir = XMVector3Unproject(v1, 0, 0, 800.0f, 600.0f, 0.0f, 1.0f, projectionMatrix, viewMatrix, worldMatrix);
-
-		rayDir -= rayPos;
-		rayDir = XMVector3Normalize(rayDir);
-
-		XMVECTOR wPos;
-
-		wPos = XMVectorSet(XMVectorGetX(rayPos) + XMVectorGetX(rayDir), XMVectorGetY(rayPos) + XMVectorGetY(rayDir), 0, 0);
-
-		m_cube_2->MoveTo(XMVectorGetX(wPos), XMVectorGetY(wPos));
+			m_cube_2->MoveTo(point3dX, point3dY);
+			
+			rightClickState = 1;
+		}
+	} 
+	else 
+	{
+		rightClickState = 0;
 	}
-		
+		 
 	m_cube->Spin(m_timer->GetTime());
 	//m_cube_2->Rotate(m_timer->GetTime());
 
-	// Render the graphics.
 	result = RenderGraphics();
 	if (!result)
 	{
@@ -288,9 +294,9 @@ bool Application::Frame()
 
 bool Application::RenderGraphics()
 {
-	XMFLOAT4X4 worldMatrix, viewMatrix, projectionMatrix, orthographicMatrix;
 	bool result;
-
+	XMFLOAT4X4 worldMatrix;
+	
 	result = m_dxBase->InitScene();
 	if (!result)
 	{
@@ -303,15 +309,11 @@ bool Application::RenderGraphics()
 		return false;
 	}
 
-	viewMatrix = m_camera->GetViewMatrix();
-	projectionMatrix = m_dxBase->GetProjectionMatrix();
-	orthographicMatrix = m_dxBase->GetOrthographicMatrix();
-
 	//Terrain
 	worldMatrix = m_terrain->GetWorldMatrix();
 
 	m_terrain->Render(m_dxBase->GetDeviceContext());
-	result = m_textureShader->Render(m_dxBase->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, m_terrain->GetIndexCount(), m_terrain->GetTexture());
+	result = m_textureShader->Render(m_dxBase->GetDeviceContext(), worldMatrix, m_viewMatrix, m_projectionMatrix, m_terrain->GetIndexCount(), m_terrain->GetTexture());
 	if (!result)
 	{
 		return false;
@@ -321,7 +323,7 @@ bool Application::RenderGraphics()
 	worldMatrix = m_cube->GetWorldMatrix();
 
 	m_cube->Render(m_dxBase->GetDeviceContext());
-	result = m_textureShader->Render(m_dxBase->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, m_cube->GetIndexCount(), m_cube->GetTexture());
+	result = m_textureShader->Render(m_dxBase->GetDeviceContext(), worldMatrix, m_viewMatrix, m_projectionMatrix, m_cube->GetIndexCount(), m_cube->GetTexture());
 	if (!result)
 	{
 		return false;
@@ -331,7 +333,7 @@ bool Application::RenderGraphics()
 	worldMatrix = m_cube_2->GetWorldMatrix();
 
 	m_cube_2->Render(m_dxBase->GetDeviceContext());
-	result = m_textureShader->Render(m_dxBase->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, m_cube_2->GetIndexCount(), m_cube_2->GetTexture());
+	result = m_textureShader->Render(m_dxBase->GetDeviceContext(), worldMatrix, m_viewMatrix, m_projectionMatrix, m_cube_2->GetIndexCount(), m_cube_2->GetTexture());
 	if (!result)
 	{
 		return false;
@@ -347,7 +349,7 @@ bool Application::RenderGraphics()
 	worldMatrix = m_text->GetWorldMatrix();
 
 	m_text->Render(m_dxBase->GetDeviceContext(), "HELLO");
-	result = m_fontShader->Render(m_dxBase->GetDeviceContext(), m_text->GetVertexCount(), m_text->GetWorldMatrix(), viewMatrix, orthographicMatrix, m_text->GetTexture());
+	result = m_fontShader->Render(m_dxBase->GetDeviceContext(), m_text->GetVertexCount(), m_text->GetWorldMatrix(), m_viewMatrix, m_orthographicMatrix, m_text->GetTexture());
 	if (!result)
 	{
 		return false;

@@ -144,7 +144,10 @@ bool DXBase::Initialize(HWND hwnd, int width, int height, bool fullscreen, bool 
 
 	TurnOnDefaultCulling();
 
-	// Set the Projection matrix
+	// Set global matrices
+	XMMATRIX world = XMMatrixIdentity();
+	XMStoreFloat4x4(&m_world, world);
+	
 	XMMATRIX projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, (float)width / height, 0.1f, 1000.0f);
 	XMStoreFloat4x4(&m_projection, projection);
 
