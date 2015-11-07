@@ -30,7 +30,7 @@ private:
 
 	struct cbPerFrame
 	{
-		Light  light;
+		Light light;
 	};
 
 public:
@@ -46,16 +46,16 @@ private:
 	void RenderShader(ID3D11DeviceContext* deviceContext, int indexCount);
 
 private:
-	ID3D11VertexShader* _VS;
-	ID3D11PixelShader* _PS;
-	ID3D11InputLayout* _vertLayout;
-	ID3D11Buffer* _cbPerObjectBuffer;
-	ID3D11SamplerState* _texSamplerState;
-	cbPerObject _cbPerObj;
+	ID3D11VertexShader* m_VS;
+	ID3D11PixelShader* m_PS;
+	ID3D11InputLayout* m_vertLayout;
+	ID3D11Buffer* m_cbPerObjectBuffer;
+	ID3D11SamplerState* m_texSamplerState;
+	cbPerObject m_cbPerObj;
 
-	ID3D11Buffer* _cbPerFrameBuffer;
-	Light _light;
-	cbPerFrame _constbuffPerFrame;
+	ID3D11Buffer* m_cbPerFrameBuffer;
+	Light m_light;
+	cbPerFrame m_constbuffPerFrame;
 };
 
 #endif

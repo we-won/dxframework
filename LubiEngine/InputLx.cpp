@@ -2,7 +2,7 @@
 
 
 InputLx::InputLx()
-	: m_nMouseXChange(0), m_nMouseYChange(0), m_nMouseX(0), m_nMouseY(0), m_bLMB(0), m_bRMB(0)
+	: m_nMouseXChange(0), m_nMouseYChange(0), m_nMouse2DX(0), m_nMouse2DY(0), m_bLMB(0), m_bRMB(0)
 {
 }
 
@@ -22,9 +22,11 @@ void InputLx::ResetAllKeyData()
 
 }
 
-bool InputLx::Initialize(HWND hwnd)
+bool InputLx::Initialize(HWND hwnd, int width, int height)
 {
 	m_hwnd = hwnd;
+	m_width = width;
+	m_height = height;
 
 	// Keyboard
 	m_Rid[0].usUsagePage = 1;
@@ -63,8 +65,8 @@ void InputLx::GetData(LPARAM lParam)
 	GetCursorPos(&mousePos);
 	ScreenToClient(m_hwnd, &mousePos);
 
-	m_nMouseX = mousePos.x;
-	m_nMouseY = mousePos.y;
+	m_nMouse2DX = mousePos.x;
+	m_nMouse2DY = mousePos.y;
 
 	// The mouse has not been tested extensively,
 	// but I believe it works.
@@ -231,4 +233,23 @@ bool InputLx::CheckKeyPress(bool bLastKeyState, bool bThisKeyState)
 		}*/
 		return false;
 	}
+}
+
+XMFLOAT3 InputLx::Get3DMouseCoor(XMFLOAT4X4 projectionMatrix, XMFLOAT4X4 viewMatrix, XMFLOAT4X4 worldMatrix)
+{
+	XMMATRIX viewMat = XMLoadFloat4x4(&viewMatrix);
+	XMMATRIX projectionMat = XMLoadFloat4x4(&projectionMatrix);
+	XMMATRIX worldMat = XMLoadFloat4x4(&worldMatrix);
+
+	XMVECTOR v0 = XMVectorSet(m_nMouse2DX, m_nMouse2DY, 0.0f, 0);
+	XMVECTOR v1 = XMVectorSet(m_nMouse2DX, m_nMouse2DY, 1.0f, 0);
+
+	XMVECTOR rayPos = XMVector3Unproject(v0, 0, 0, m_width, m_height, 0.0f, 1.0f, projectionMat, viewMat, worldMat);
+	XMVECTOR rayDir = XMVector3Unproject(v1, 0, 0, m_width, m_height, 0.0f, 1.0f, projectionMat, viewMat, worldMat);
+
+	float point3dX = ((0.0f - XMVectorGetY(rayPos)) * (XMVectorGetX(rayDir) - XMVectorGetX(rayPos))) / (XMVectorGetY(rayDir) - XMVectorGetY(rayPos)) + XMVectorGetX(rayPos);
+	float point3dY = 0.0f;
+	float point3dZ = ((0.0f - XMVectorGetY(rayPos)) * (XMVectorGetZ(rayDir) - XMVectorGetZ(rayPos))) / (XMVectorGetY(rayDir) - XMVectorGetY(rayPos)) + XMVectorGetZ(rayPos);
+
+	return XMFLOAT3(point3dX, point3dY, point3dZ);
 }

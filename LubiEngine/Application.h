@@ -53,7 +53,7 @@ private:
 	Cube* m_cube_2;
 
 	//Mouse Test
-	bool rightClickState;
+	int m_rightClickState;
 };
 
 #endif

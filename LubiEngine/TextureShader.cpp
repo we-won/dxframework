@@ -2,13 +2,8 @@
 
 
 TextureShader::TextureShader()
+: m_VS(0), m_PS(0), m_vertLayout(0), m_cbPerObjectBuffer(0), m_texSamplerState(0), m_cbPerFrameBuffer(0)
 {
-	_VS = 0;
-	_PS = 0;
-	_vertLayout = 0;
-	_cbPerObjectBuffer = 0;
-	_texSamplerState = 0;
-	_cbPerFrameBuffer = 0;
 }
 
 
@@ -38,7 +33,7 @@ bool TextureShader::Initialize(ID3D11Device* device)
 	}
 
 	//Create the Shader Objects
-	hr = device->CreateVertexShader(VS_Buffer->GetBufferPointer(), VS_Buffer->GetBufferSize(), NULL, &_VS);
+	hr = device->CreateVertexShader(VS_Buffer->GetBufferPointer(), VS_Buffer->GetBufferSize(), NULL, &m_VS);
 	if (FAILED(hr))
 	{
 		if (VS_Buffer)
@@ -47,7 +42,7 @@ bool TextureShader::Initialize(ID3D11Device* device)
 		return false;
 	}
 
-	hr = device->CreatePixelShader(PS_Buffer->GetBufferPointer(), PS_Buffer->GetBufferSize(), NULL, &_PS);
+	hr = device->CreatePixelShader(PS_Buffer->GetBufferPointer(), PS_Buffer->GetBufferSize(), NULL, &m_PS);
 	if (FAILED(hr))
 	{
 		if (PS_Buffer)
@@ -67,7 +62,7 @@ bool TextureShader::Initialize(ID3D11Device* device)
 	UINT numElements = ARRAYSIZE(layout);
 
 	//Create the Input Layout
-	hr = device->CreateInputLayout(layout, numElements, VS_Buffer->GetBufferPointer(), VS_Buffer->GetBufferSize(), &_vertLayout);
+	hr = device->CreateInputLayout(layout, numElements, VS_Buffer->GetBufferPointer(), VS_Buffer->GetBufferSize(), &m_vertLayout);
 	if (FAILED(hr))
 	{
 		return false;
@@ -89,7 +84,7 @@ bool TextureShader::Initialize(ID3D11Device* device)
 	cbbd.CPUAccessFlags = 0;
 	cbbd.MiscFlags = 0;
 
-	hr = device->CreateBuffer(&cbbd, NULL, &_cbPerObjectBuffer);
+	hr = device->CreateBuffer(&cbbd, NULL, &m_cbPerObjectBuffer);
 	if (FAILED(hr))
 	{
 		return false;
@@ -104,7 +99,7 @@ bool TextureShader::Initialize(ID3D11Device* device)
 	cbbd.CPUAccessFlags = 0;
 	cbbd.MiscFlags = 0;
 
-	hr = device->CreateBuffer(&cbbd, NULL, &_cbPerFrameBuffer);
+	hr = device->CreateBuffer(&cbbd, NULL, &m_cbPerFrameBuffer);
 
 	// Describe the Sample State
 	D3D11_SAMPLER_DESC sampDesc;
@@ -118,55 +113,55 @@ bool TextureShader::Initialize(ID3D11Device* device)
 	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	//Create the Sample State
-	hr = device->CreateSamplerState(&sampDesc, &_texSamplerState);
+	hr = device->CreateSamplerState(&sampDesc, &m_texSamplerState);
 
-	_light.dir = XMFLOAT3(0.25f, 0.5f, -1.0f);
-	_light.ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-	_light.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	m_light.dir = XMFLOAT3(0.25f, 0.5f, -1.0f);
+	m_light.ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	m_light.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
-	_light.dir = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	_light.ambient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	_light.diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	m_light.dir = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_light.ambient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	m_light.diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 
 	return true;
 }
 
 void TextureShader::ReleaseObjects()
 {
-	if (_VS)
+	if (m_VS)
 	{
-		_VS->Release();
-		_VS = 0;
+		m_VS->Release();
+		m_VS = 0;
 	}
 
-	if (_PS)
+	if (m_PS)
 	{
-		_PS->Release();
-		_PS = 0;
+		m_PS->Release();
+		m_PS = 0;
 	}
 
-	if (_vertLayout)
+	if (m_vertLayout)
 	{
-		_vertLayout->Release();
-		_vertLayout = 0;
+		m_vertLayout->Release();
+		m_vertLayout = 0;
 	}
 
-	if (_cbPerObjectBuffer)
+	if (m_cbPerObjectBuffer)
 	{
-		_cbPerObjectBuffer->Release();
-		_cbPerObjectBuffer = 0;
+		m_cbPerObjectBuffer->Release();
+		m_cbPerObjectBuffer = 0;
 	}
 
-	if (_texSamplerState)
+	if (m_texSamplerState)
 	{
-		_texSamplerState->Release();
-		_texSamplerState = 0;
+		m_texSamplerState->Release();
+		m_texSamplerState = 0;
 	}
 
-	if (_cbPerFrameBuffer)
+	if (m_cbPerFrameBuffer)
 	{
-		_cbPerFrameBuffer->Release();
-		_cbPerFrameBuffer = 0;
+		m_cbPerFrameBuffer->Release();
+		m_cbPerFrameBuffer = 0;
 	}
 }
 
@@ -191,28 +186,28 @@ bool TextureShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMFL
 	viewMat = XMLoadFloat4x4(&viewMatrix);
 	projectionMat = XMLoadFloat4x4(&projectionMatrix);
 
-	_constbuffPerFrame.light = _light;
-	deviceContext->UpdateSubresource(_cbPerFrameBuffer, 0, NULL, &_constbuffPerFrame, 0, 0);
-	deviceContext->PSSetConstantBuffers(0, 1, &_cbPerFrameBuffer);
+	m_constbuffPerFrame.light = m_light;
+	deviceContext->UpdateSubresource(m_cbPerFrameBuffer, 0, NULL, &m_constbuffPerFrame, 0, 0);
+	deviceContext->PSSetConstantBuffers(0, 1, &m_cbPerFrameBuffer);
 
 	XMMATRIX WVPMatrix = worldMat * viewMat * projectionMat;
 	
 	XMFLOAT4X4 WVP;
 	XMStoreFloat4x4(&WVP, XMMatrixTranspose(WVPMatrix));
 
-	_cbPerObj.WVP = WVP;
+	m_cbPerObj.WVP = WVP;
 	
 	XMFLOAT4X4 World;
 	XMStoreFloat4x4(&World, XMMatrixTranspose(worldMat));
 
-	_cbPerObj.World = World;
+	m_cbPerObj.World = World;
 
-	deviceContext->UpdateSubresource(_cbPerObjectBuffer, 0, NULL, &_cbPerObj, 0, 0);
+	deviceContext->UpdateSubresource(m_cbPerObjectBuffer, 0, NULL, &m_cbPerObj, 0, 0);
 
-	deviceContext->VSSetConstantBuffers(0, 1, &_cbPerObjectBuffer);
+	deviceContext->VSSetConstantBuffers(0, 1, &m_cbPerObjectBuffer);
 
 	deviceContext->PSSetShaderResources(0, 1, &texture);
-	deviceContext->PSSetSamplers(0, 1, &_texSamplerState);
+	deviceContext->PSSetSamplers(0, 1, &m_texSamplerState);
 
 	return true;
 }
@@ -220,11 +215,11 @@ bool TextureShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMFL
 void TextureShader::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)
 {
 	//Set the Input Layout
-	deviceContext->IASetInputLayout(_vertLayout);
+	deviceContext->IASetInputLayout(m_vertLayout);
 
 	//Set Vertex and Pixel Shaders
-	deviceContext->VSSetShader(_VS, 0, 0);
-	deviceContext->PSSetShader(_PS, 0, 0);
+	deviceContext->VSSetShader(m_VS, 0, 0);
+	deviceContext->PSSetShader(m_PS, 0, 0);
 
 	//Draw
 	deviceContext->DrawIndexed(indexCount, 0, 0);

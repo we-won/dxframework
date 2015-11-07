@@ -2,6 +2,7 @@
 #define _INPUTLX_H
 
 #include <Windows.h>
+#include <xnamath.h>
 
 enum
 {
@@ -50,11 +51,16 @@ public:
 	// Only call this once when your Application begins.
 	// I may be wrong, but I saw nothing from what I read that indicated
 	// devices need to be unregistered.
-	bool Initialize(HWND hwnd);
+	bool Initialize(HWND hwnd, int width, int height);
 
 	// Everytime your MsgProc's uMsg is WM_INPUT, you will want to call the GetData function.
 	// I believe this is smarter than calling it every frame in a game loop.
 	void GetData(LPARAM lParam);
+
+	// If for some reason you need to reset all the detected input values to the state
+	// of false use this. Ofcourse this would mean all keys and buttons are not being pressed.
+	// I call this once in the constructor to assure the input states are consistent in the beginning.
+	void ResetAllKeyData();
 
 	// This should be self-explanatory. Depending on which function
 	// you call, you will get true or false about the state of the mouse button.
@@ -69,12 +75,14 @@ public:
 	int GetMouseChangeX() { return m_nMouseXChange; }
 	int GetMouseChangeY() { return m_nMouseYChange; }
 
+	XMFLOAT3 Get3DMouseCoor(XMFLOAT4X4 projectionMatrix, XMFLOAT4X4 viewMatrix, XMFLOAT4X4 worldMatrix);
+
 	// OPTIONALLY:
 	// To obtain exact mouse coords check the uMsg in your Application's MsgProc
 	// for WM_MOUSEMOVE, and use HIWORD() LOWORD() functions to extract the mouse X,Y
 	// from lParam. Store them in the below variables.
-	int GetMouseCoorX() { return m_nMouseX; }
-	int GetMouseCoorY() { return m_nMouseY; }
+	int Get2DMouseCoorX() { return m_nMouse2DX; }
+	int Get2DMouseCoorY() { return m_nMouse2DY; }
 
 	// Alphabetic as in any letter from the Alphabet. So IsAlphabeticKeyDown returns
 	// a value of true or false from an array of 25 booleans. Each index is associated
@@ -88,11 +96,6 @@ public:
 	// such as VKey_LeftArrow and but subtract 0x25 or make a different enumeration list
 	// for all 4 arrow directions and set the first value to 0.
 	bool IsArrowKeyDown(int nArrowDirection){ return m_baArrows[nArrowDirection]; }
-
-	// If for some reason you need to reset all the detected input values to the state
-	// of false use this. Ofcourse this would mean all keys and buttons are not being pressed.
-	// I call this once in the constructor to assure the input states are consistent in the beginning.
-	void ResetAllKeyData();
 
 private:
 	// The CheckKeyPress function is because of these issues:
@@ -109,6 +112,9 @@ private:
 	bool CheckKeyPress(bool bLastKeyState, bool bThisKeyState);
 
 private:
+
+	int m_width, m_height;
+
 	// Two input devices are covered by this class. Mouse and Keyboard.
 	// A good reference for them is:
 	RAWINPUTDEVICE m_Rid[2];
@@ -123,8 +129,8 @@ private:
 	int m_nMouseYChange;
 
 	// Should be obvious what functions return these two values.
-	int m_nMouseX;
-	int m_nMouseY;
+	int m_nMouse2DX;
+	int m_nMouse2DY;
 
 	// Again, should be obvious what functions use these. 
 	// LMB = Left Mouse Button. RMB = Right Mouse Button

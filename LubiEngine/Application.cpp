@@ -4,7 +4,7 @@
 Application::Application()
 	: m_dxBase(0), m_colorShader(0), m_textureShader(0), m_fontShader(0), m_camera(0), m_timer(0), m_input(0),
 		m_terrain(0), m_text(0), m_cube(0), m_cube_2(0),
-		rightClickState(0)
+		m_rightClickState(0)
 {
 }
 
@@ -79,7 +79,7 @@ bool Application::Initialize(HINSTANCE hInstance, HWND hwnd, int width, int heig
 		return false;
 	}
 
-	if (!m_input->Initialize(hwnd))
+	if (!m_input->Initialize(hwnd, width, height))
 	{
 		return false;
 	}
@@ -252,32 +252,18 @@ bool Application::Frame()
 
 	if (m_input->IsRightMouseButtonDown()) 
 	{
-		if (rightClickState == 0)
+		if (m_rightClickState == 0)
 		{
-			float mouseX = (float)m_input->GetMouseCoorX();
-			float mouseY = (float)m_input->GetMouseCoorY();
+			XMFLOAT3 mouse3D = m_input->Get3DMouseCoor(m_projectionMatrix, m_viewMatrix, m_worldMatrix);
 
-			XMMATRIX viewMatrix = XMLoadFloat4x4(&m_viewMatrix);
-			XMMATRIX projectionMatrix = XMLoadFloat4x4(&m_projectionMatrix);
-			XMMATRIX worldMatrix = XMLoadFloat4x4(&m_worldMatrix);
-
-			XMVECTOR v0 = XMVectorSet(mouseX, mouseY, 0.0f, 0);
-			XMVECTOR v1 = XMVectorSet(mouseX, mouseY, 1.0f, 0);
-
-			XMVECTOR rayPos = XMVector3Unproject(v0, 0, 0, m_width, m_height, 0.0f, 1.0f, projectionMatrix, viewMatrix, worldMatrix);
-			XMVECTOR rayDir = XMVector3Unproject(v1, 0, 0, m_width, m_height, 0.0f, 1.0f, projectionMatrix, viewMatrix, worldMatrix);
-
-			float point3dX = ( ( 0.0f - XMVectorGetY(rayPos) ) * ( XMVectorGetX(rayDir) - XMVectorGetX(rayPos) ) ) / ( XMVectorGetY(rayDir) - XMVectorGetY(rayPos) ) + XMVectorGetX(rayPos);
-			float point3dY = ( ( 0.0f - XMVectorGetY(rayPos) ) * ( XMVectorGetZ(rayDir) - XMVectorGetZ(rayPos) ) ) / ( XMVectorGetY(rayDir) - XMVectorGetY(rayPos) ) + XMVectorGetZ(rayPos);
-
-			m_cube_2->MoveTo(point3dX, point3dY);
+			m_cube_2->MoveTo(mouse3D.x, mouse3D.z);
 			
-			rightClickState = 1;
+			m_rightClickState = 1;
 		}
 	} 
 	else 
 	{
-		rightClickState = 0;
+		m_rightClickState = 0;
 	}
 		 
 	m_cube->Spin(m_timer->GetTime());

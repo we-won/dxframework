@@ -4,7 +4,7 @@
 Camera::Camera()
 {
 	//Camera information
-	m_camPosition = XMFLOAT4(0.0f, 20.0f, -8.0f, 0.0f);
+	m_camPosition = XMFLOAT4(0.0f, 50.0f, -8.0f, 0.0f);
 	m_camTarget = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	m_camUp = XMFLOAT4(0.0f, 1.0f, 0.0f, 0.0f);
 }
