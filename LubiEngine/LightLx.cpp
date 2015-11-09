@@ -59,32 +59,36 @@ void LightLx::ReleaseObjects()
 
 void LightLx::SetLightEffectsOn()
 {
-	m_light.dir = XMFLOAT3(0.25f, 0.5f, -1.0f);
+	m_light.dir = XMFLOAT3(0.25f, 1.5f, -10.0f);
+	m_light.pad = 0.0f;
 	m_light.ambient = XMFLOAT4(0.25f, 0.25f, 0.25f, 1.0f);
 	m_light.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 void LightLx::SetLightEffectsOff()
 {
-	m_light.dir = XMFLOAT3(0.25f, 0.5f, -1.0f);
+	m_light.dir = XMFLOAT3(0.25f, 1.5f, -10.0f);
+	m_light.pad = 0.0f;
 	m_light.ambient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	m_light.diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 void LightLx::ApplyLight(ID3D11DeviceContext* deviceContext)
 {	
-	XMMATRIX viewMat, projectionMat;
+	/*XMMATRIX viewMat, projectionMat;
 
 	viewMat = XMLoadFloat4x4(&m_viewMatrix);
 	projectionMat = XMLoadFloat4x4(&m_projectionMatrix);
 
-	XMMATRIX VPMatrix = viewMat * projectionMat;
-	
-	XMFLOAT4X4 VP;
-	XMStoreFloat4x4(&VP, XMMatrixTranspose(VPMatrix));
+	XMFLOAT4X4 View;
+	XMStoreFloat4x4(&View, XMMatrixTranspose(viewMat));
+
+	XMFLOAT4X4 Projection;
+	XMStoreFloat4x4(&Projection, XMMatrixTranspose(projectionMat));*/
 	
 	m_constbuffPerFrame.light = m_light;
-	m_constbuffPerFrame.VP = VP;
+	/*m_constbuffPerFrame.lightViewMatrix = View;
+	m_constbuffPerFrame.lightProjectionMatrix = Projection;*/
 
 	deviceContext->UpdateSubresource(m_cbPerFrameBuffer, 0, NULL, &m_constbuffPerFrame, 0, 0);
 	deviceContext->PSSetConstantBuffers(0, 1, &m_cbPerFrameBuffer);
@@ -94,7 +98,7 @@ bool LightLx::GenerateViewMatrix()
 {
 	XMVECTOR camPosition, camTarget, camUp;
 
-	XMFLOAT4 position = XMFLOAT4(0.25f, 0.5f, -1.0f, 0.0f);
+	XMFLOAT4 position = XMFLOAT4(0.25f, 1.5f, -10.0f, 0.0f);
 	m_lookAt = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	m_up = XMFLOAT4(0.0f, 1.0f, 0.0f, 0.0f);
 

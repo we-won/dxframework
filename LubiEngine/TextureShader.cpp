@@ -144,9 +144,10 @@ void TextureShader::ReleaseObjects()
 	}
 }
 
-bool TextureShader::Render(ID3D11DeviceContext* deviceContext, XMFLOAT4X4 worldMatrix, XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectionMatrix, int indexCount, ID3D11ShaderResourceView* texture)
+bool TextureShader::Render(ID3D11DeviceContext* deviceContext, XMFLOAT4X4 worldMatrix, XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectionMatrix, int indexCount, ID3D11ShaderResourceView* texture,
+	XMFLOAT4X4 lightViewMatrix, XMFLOAT4X4 lightProjectionMatrix, ID3D11ShaderResourceView* depthMapTexture)
 {
-	if (!SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, texture))
+	if (!SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, texture, lightViewMatrix, lightProjectionMatrix, depthMapTexture))
 	{
 		return false;
 	}
@@ -156,7 +157,8 @@ bool TextureShader::Render(ID3D11DeviceContext* deviceContext, XMFLOAT4X4 worldM
 	return true;
 }
 
-bool TextureShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMFLOAT4X4 worldMatrix, XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectionMatrix, ID3D11ShaderResourceView* texture)
+bool TextureShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMFLOAT4X4 worldMatrix, XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectionMatrix, ID3D11ShaderResourceView* texture,
+	XMFLOAT4X4 lightViewMatrix, XMFLOAT4X4 lightProjectionMatrix, ID3D11ShaderResourceView* depthMapTexture)
 {
 	//Set the World/View/Projection matrix, then send it to constant buffer in effect file
 	XMMATRIX worldMat, viewMat, projectionMat;
@@ -177,11 +179,22 @@ bool TextureShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMFL
 
 	m_cbPerObj.World = World;
 
+	XMMATRIX lightViewMat, lightProjectionMat;
+	
+	XMMATRIX LightWVPMatrix = worldMat * lightViewMat * lightProjectionMat;
+	
+	XMFLOAT4X4 LightWVP;
+	XMStoreFloat4x4(&LightWVP, XMMatrixTranspose(LightWVPMatrix));
+
+	m_cbPerObj.lightWVP = LightWVP;
+
 	deviceContext->UpdateSubresource(m_cbPerObjectBuffer, 0, NULL, &m_cbPerObj, 0, 0);
 
 	deviceContext->VSSetConstantBuffers(0, 1, &m_cbPerObjectBuffer);
 
 	deviceContext->PSSetShaderResources(0, 1, &texture);
+	deviceContext->PSSetShaderResources(1, 1, &depthMapTexture);
+
 	deviceContext->PSSetSamplers(0, 1, &m_texSamplerState);
 
 	return true;

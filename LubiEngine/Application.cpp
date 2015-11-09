@@ -323,7 +323,7 @@ bool Application::RenderGraphics()
 	worldMatrix = m_terrain->GetWorldMatrix();
 
 	m_terrain->Render(m_dxBase->GetDeviceContext());
-	result = m_textureShader->Render(m_dxBase->GetDeviceContext(), worldMatrix, m_viewMatrix, m_projectionMatrix, m_terrain->GetIndexCount(), m_terrain->GetTexture());
+	result = m_textureShader->Render(m_dxBase->GetDeviceContext(), worldMatrix, m_viewMatrix, m_projectionMatrix, m_terrain->GetIndexCount(), m_terrain->GetTexture(), m_light->GetViewMatrix(), m_light->GetProjectionMatrix(), m_dxBase->GetShaderResourceView());
 	if (!result)
 	{
 		return false;
@@ -337,7 +337,7 @@ bool Application::RenderGraphics()
 	worldMatrix = m_cube->GetWorldMatrix();
 
 	m_cube->Render(m_dxBase->GetDeviceContext());
-	result = m_textureShader->Render(m_dxBase->GetDeviceContext(), worldMatrix, m_viewMatrix, m_projectionMatrix, m_cube->GetIndexCount(), m_cube->GetTexture());
+	result = m_textureShader->Render(m_dxBase->GetDeviceContext(), worldMatrix, m_viewMatrix, m_projectionMatrix, m_cube->GetIndexCount(), m_cube->GetTexture(), m_light->GetViewMatrix(), m_light->GetProjectionMatrix(), m_dxBase->GetShaderResourceView());
 	if (!result)
 	{
 		return false;
@@ -347,7 +347,7 @@ bool Application::RenderGraphics()
 	worldMatrix = m_cube_2->GetWorldMatrix();
 
 	m_cube_2->Render(m_dxBase->GetDeviceContext());
-	result = m_textureShader->Render(m_dxBase->GetDeviceContext(), worldMatrix, m_viewMatrix, m_projectionMatrix, m_cube_2->GetIndexCount(), m_cube_2->GetTexture());
+	result = m_textureShader->Render(m_dxBase->GetDeviceContext(), worldMatrix, m_viewMatrix, m_projectionMatrix, m_cube_2->GetIndexCount(), m_cube_2->GetTexture(), m_light->GetViewMatrix(), m_light->GetProjectionMatrix(), m_dxBase->GetShaderResourceView());
 	if (!result)
 	{
 		return false;

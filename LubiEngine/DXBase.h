@@ -30,6 +30,9 @@ public:
 	XMFLOAT4X4 GetProjectionMatrix() { return m_projection; }
 	XMFLOAT4X4 GetOrthographicMatrix() { return m_ortho; }
 
+	// I DONT KNOW
+	ID3D11ShaderResourceView* GetShaderResourceView() { return m_shaderResourceView;  }
+
 private:
 	void CreateDepthStencilState();
 	void CreateDisabledDepthStencilState();
@@ -53,6 +56,9 @@ private:
 	ID3D11RasterizerState* m_noCullRasterState;
 	ID3D11BlendState* m_alphaEnableBlendingState;
 	ID3D11BlendState* m_alphaDisableBlendingState;
+
+	// I DONT KNOW
+	ID3D11ShaderResourceView* m_shaderResourceView;
 
 	XMFLOAT4X4 m_world;
 	XMFLOAT4X4 m_projection;

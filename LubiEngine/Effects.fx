@@ -1,6 +1,7 @@
 struct Light
 {
 	float3 dir;
+	float padding;
 	float4 ambient;
 	float4 diffuse;
 };
@@ -8,16 +9,17 @@ struct Light
 cbuffer cbPerFrame
 {
 	Light light;
-	float4x4 VP;
 };
 
 cbuffer cbPerObject
 {
 	float4x4 WVP;
 	float4x4 World;
+	float4x4 LightWVP;
 };
 
 Texture2D ObjTexture;
+Texture2D depthMapTexture;
 SamplerState ObjSamplerState;
 
 struct VS_OUTPUT
@@ -33,18 +35,18 @@ VS_OUTPUT VS(float4 inPos : POSITION, float2 inTexCoord : TEXCOORD, float3 norma
 {
 	VS_OUTPUT output;
 	float4 worldPosition;
+	float3 tmpLightPos = float3(0.25f, 1.5f, -10.0f);
 	
     output.Pos = mul(inPos, WVP);
 	
-	output.lightViewPosition = mul(inPos, World);
-    //output.lightViewPosition = mul(inPos, VP);
-	
+	output.lightViewPosition = mul(inPos, LightWVP);
+	 
 	output.TexCoord = inTexCoord;
 	
 	output.normal = mul(normal, World);
 	
 	worldPosition = mul(inPos, World);
-	//output.lightPos = light.dir.xyz - worldPosition.xyz;
+	output.lightPos = tmpLightPos.xyz - worldPosition.xyz;
 	
     return output;
 }
@@ -60,6 +62,7 @@ float4 PS(VS_OUTPUT input) : SV_TARGET
 	float4 textureColor;
 	
 	input.normal = normalize(input.normal);
+	input.lightPos = normalize(input.lightPos);
 	
 	bias = 0.001f;
 	
@@ -70,7 +73,7 @@ float4 PS(VS_OUTPUT input) : SV_TARGET
 	
 	if((saturate(projectTexCoord.x) == projectTexCoord.x) && (saturate(projectTexCoord.y) == projectTexCoord.y))
 	{
-		depthValue = ObjTexture.Sample(ObjSamplerState, projectTexCoord).r;
+		depthValue = depthMapTexture.Sample(ObjSamplerState, projectTexCoord).r;
 		lightDepthValue = input.lightViewPosition.z / input.lightViewPosition.w;
 		lightDepthValue = lightDepthValue - bias;
 		
@@ -93,7 +96,8 @@ float4 PS(VS_OUTPUT input) : SV_TARGET
     return color;
 	
 	// Old 
-	/*input.normal = normalize(input.normal);
+	/*
+	input.normal = normalize(input.normal);
 	
 	float4 diffuse = ObjTexture.Sample( ObjSamplerState, input.TexCoord );
     
@@ -101,7 +105,7 @@ float4 PS(VS_OUTPUT input) : SV_TARGET
 	finalColor = diffuse * light.ambient;
 	finalColor += saturate(dot(light.dir, input.normal) * light.diffuse * diffuse);
     
-    return float4(finalColor, diffuse.a);*/
-	
+    return float4(finalColor, diffuse.a);
+	*/
 }
 

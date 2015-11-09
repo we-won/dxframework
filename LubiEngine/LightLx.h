@@ -23,7 +23,6 @@ private:
 	struct cbPerFrame
 	{
 		Light light;
-		XMFLOAT4X4 VP;
 	};
 
 public:
@@ -39,6 +38,9 @@ public:
 
 	bool GenerateViewMatrix();
 	bool GenerateProjectionMatrix();
+
+	XMFLOAT4X4 GetViewMatrix() { return m_viewMatrix; }
+	XMFLOAT4X4 GetProjectionMatrix() { return m_projectionMatrix; }
 
 private:
 	ID3D11Buffer* m_cbPerFrameBuffer;

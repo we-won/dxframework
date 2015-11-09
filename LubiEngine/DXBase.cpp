@@ -6,6 +6,7 @@ DXBase::DXBase()
 	m_depthStencilState(0), m_depthDisabledStencilState(0), m_rasterState(0), m_noCullRasterState(0), m_alphaEnableBlendingState(0), m_alphaDisableBlendingState(0)
 {
 	m_vsync_enabled = false;
+	m_shaderResourceView = 0;
 }
 
 
@@ -153,6 +154,20 @@ bool DXBase::Initialize(HWND hwnd, int width, int height, bool fullscreen, bool 
 
 	XMMATRIX ortho = XMMatrixOrthographicLH((float)width, (float)height, 0.1f, 1000.0f);
 	XMStoreFloat4x4(&m_ortho, ortho);
+	
+	// I dont know -----------------------------
+	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
+
+	// Setup the description of the shader resource view.
+	shaderResourceViewDesc.Format = depthBufferDesc.Format;
+	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
+	shaderResourceViewDesc.Texture2D.MipLevels = 1;
+
+	// Create the shader resource view.
+	m_device->CreateShaderResourceView(m_depthStencilBuffer, &shaderResourceViewDesc, &m_shaderResourceView);
+
+	// I dont know -----------------------------
 
 	return true;
 }
@@ -364,6 +379,13 @@ void DXBase::ReleaseObjects()
 	{
 		m_alphaDisableBlendingState->Release();
 		m_alphaDisableBlendingState = 0;
+	}
+
+	// I DONT KNOW
+	if (m_shaderResourceView)
+	{
+		m_shaderResourceView->Release();
+		m_shaderResourceView = 0;
 	}
 }
 

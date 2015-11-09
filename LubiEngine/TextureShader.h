@@ -11,8 +11,9 @@ private:
 	//Create effects constant buffer's structure//
 	struct cbPerObject
 	{
-		XMFLOAT4X4  WVP;
-		XMFLOAT4X4  World;
+		XMFLOAT4X4 WVP;
+		XMFLOAT4X4 World;
+		XMFLOAT4X4 lightWVP;
 	};
 
 public:
@@ -21,10 +22,12 @@ public:
 
 	bool Initialize(ID3D11Device* device);
 	void ReleaseObjects();
-	bool Render(ID3D11DeviceContext* deviceContext, XMFLOAT4X4 worldMatrix, XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectionMatrix, int indexCount, ID3D11ShaderResourceView* texture);
+	bool Render(ID3D11DeviceContext* deviceContext, XMFLOAT4X4 worldMatrix, XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectionMatrix, int indexCount, ID3D11ShaderResourceView* texture, 
+		XMFLOAT4X4 lightViewMatrix, XMFLOAT4X4 lightProjectionMatrix, ID3D11ShaderResourceView* depthMapTexture);
 
 private:
-	bool TextureShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMFLOAT4X4 worldMatrix, XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectionMatrix, ID3D11ShaderResourceView* texture);
+	bool TextureShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMFLOAT4X4 worldMatrix, XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectionMatrix, ID3D11ShaderResourceView* texture,
+		XMFLOAT4X4 lightViewMatrix, XMFLOAT4X4 lightProjectionMatrix, ID3D11ShaderResourceView* depthMapTexture);
 	void RenderShader(ID3D11DeviceContext* deviceContext, int indexCount);
 
 private:
