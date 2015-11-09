@@ -2,7 +2,7 @@
 
 
 FontShader::FontShader() 
-	: m_VS(0), m_PS(0), m_vertLayout(0), m_cbPerObjectBuffer(0), m_texSamplerState(0)
+: m_VS(0), m_PS(0), m_vertLayout(0), m_cbPerObjectBuffer(0), m_texSamplerState(0)
 {
 }
 

@@ -1,8 +1,14 @@
-﻿Build started 11/7/2015 12:26:12 AM.
+﻿Build started 11/7/2015 11:36:17 PM.
      1>Project "C:\Users\™\Documents\Visual Studio 2013\Projects\dxframework\LubiEngine\LubiEngine.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /wd4005 /analyze- /errorReport:prompt TextureShader.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /wd4005 /analyze- /errorReport:prompt Application.cpp System.cpp TextureShader.cpp main.cpp
          TextureShader.cpp
+         Application.cpp
+         Generating Code...
+         Compiling...
+         main.cpp
+         System.cpp
+         Generating Code...
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\™\Documents\Visual Studio 2013\Projects\dxframework\Debug\LubiEngine.exe" /INCREMENTAL /NOLOGO d3d11.lib d3dx11.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\™\Documents\Visual Studio 2013\Projects\dxframework\Debug\LubiEngine.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\™\Documents\Visual Studio 2013\Projects\dxframework\Debug\LubiEngine.lib" /MACHINE:X86 Debug\Application.obj
          Debug\Camera.obj
@@ -11,6 +17,7 @@
          Debug\DXBase.obj
          Debug\FontShader.obj
          Debug\InputLx.obj
+         Debug\LightLx.obj
          Debug\main.obj
          Debug\System.obj
          Debug\Terrain.obj
@@ -23,4 +30,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.60
+Time Elapsed 00:00:03.74

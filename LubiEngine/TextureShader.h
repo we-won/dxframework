@@ -15,24 +15,6 @@ private:
 		XMFLOAT4X4  World;
 	};
 
-
-	struct Light
-	{
-		Light()
-		{
-			ZeroMemory(this, sizeof(Light));
-		}
-		XMFLOAT3 dir;
-		float pad;
-		XMFLOAT4 ambient;
-		XMFLOAT4 diffuse;
-	};
-
-	struct cbPerFrame
-	{
-		Light light;
-	};
-
 public:
 	TextureShader();
 	~TextureShader();
@@ -52,10 +34,6 @@ private:
 	ID3D11Buffer* m_cbPerObjectBuffer;
 	ID3D11SamplerState* m_texSamplerState;
 	cbPerObject m_cbPerObj;
-
-	ID3D11Buffer* m_cbPerFrameBuffer;
-	Light m_light;
-	cbPerFrame m_constbuffPerFrame;
 };
 
 #endif

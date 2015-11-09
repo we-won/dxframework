@@ -2,7 +2,7 @@
 
 
 TextureShader::TextureShader()
-: m_VS(0), m_PS(0), m_vertLayout(0), m_cbPerObjectBuffer(0), m_texSamplerState(0), m_cbPerFrameBuffer(0)
+: m_VS(0), m_PS(0), m_vertLayout(0), m_cbPerObjectBuffer(0), m_texSamplerState(0)
 {
 }
 
@@ -90,17 +90,6 @@ bool TextureShader::Initialize(ID3D11Device* device)
 		return false;
 	}
 
-	//Create the buffer to send to the cbuffer per frame in effect file
-	ZeroMemory(&cbbd, sizeof(D3D11_BUFFER_DESC));
-
-	cbbd.Usage = D3D11_USAGE_DEFAULT;
-	cbbd.ByteWidth = sizeof(cbPerFrame);
-	cbbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbbd.CPUAccessFlags = 0;
-	cbbd.MiscFlags = 0;
-
-	hr = device->CreateBuffer(&cbbd, NULL, &m_cbPerFrameBuffer);
-
 	// Describe the Sample State
 	D3D11_SAMPLER_DESC sampDesc;
 	ZeroMemory(&sampDesc, sizeof(sampDesc));
@@ -114,14 +103,10 @@ bool TextureShader::Initialize(ID3D11Device* device)
 
 	//Create the Sample State
 	hr = device->CreateSamplerState(&sampDesc, &m_texSamplerState);
-
-	m_light.dir = XMFLOAT3(0.25f, 0.5f, -1.0f);
-	m_light.ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-	m_light.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-
-	m_light.dir = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	m_light.ambient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	m_light.diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	if (FAILED(hr))
+	{
+		return false;
+	}
 
 	return true;
 }
@@ -157,12 +142,6 @@ void TextureShader::ReleaseObjects()
 		m_texSamplerState->Release();
 		m_texSamplerState = 0;
 	}
-
-	if (m_cbPerFrameBuffer)
-	{
-		m_cbPerFrameBuffer->Release();
-		m_cbPerFrameBuffer = 0;
-	}
 }
 
 bool TextureShader::Render(ID3D11DeviceContext* deviceContext, XMFLOAT4X4 worldMatrix, XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectionMatrix, int indexCount, ID3D11ShaderResourceView* texture)
@@ -185,10 +164,6 @@ bool TextureShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMFL
 	worldMat = XMLoadFloat4x4(&worldMatrix);
 	viewMat = XMLoadFloat4x4(&viewMatrix);
 	projectionMat = XMLoadFloat4x4(&projectionMatrix);
-
-	m_constbuffPerFrame.light = m_light;
-	deviceContext->UpdateSubresource(m_cbPerFrameBuffer, 0, NULL, &m_constbuffPerFrame, 0, 0);
-	deviceContext->PSSetConstantBuffers(0, 1, &m_cbPerFrameBuffer);
 
 	XMMATRIX WVPMatrix = worldMat * viewMat * projectionMat;
 	

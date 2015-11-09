@@ -2,7 +2,7 @@
 
 
 TextManager::TextManager()
-	: m_vertexBuffer(0), m_texture(0)
+: m_vertexBuffer(0), m_texture(0)
 {
 	m_maxLetters = 24;
 	m_length = 0;

@@ -11,6 +11,7 @@ const bool VSYNC_ENABLED = false;
 #include "Camera.h"
 #include "TimerLx.h"
 #include "InputLx.h"
+#include "LightLx.h"
 
 #include "Terrain.h"
 #include "TextManager.h"
@@ -40,6 +41,7 @@ private:
 	Camera* m_camera;
 	TimerLx* m_timer;
 	InputLx* m_input;
+	LightLx* m_light;
 
 	XMFLOAT4X4 m_worldMatrix;
 	XMFLOAT4X4 m_viewMatrix; 

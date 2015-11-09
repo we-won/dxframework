@@ -74,6 +74,7 @@
     <ClCompile Include="DXBase.cpp" />
     <ClCompile Include="FontShader.cpp" />
     <ClCompile Include="InputLx.cpp" />
+    <ClCompile Include="LightLx.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="System.cpp" />
     <ClCompile Include="Terrain.cpp" />
@@ -90,6 +91,7 @@
     <ClInclude Include="DXBase.h" />
     <ClInclude Include="FontShader.h" />
     <ClInclude Include="InputLx.h" />
+    <ClInclude Include="LightLx.h" />
     <ClInclude Include="System.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TextManager.h" />

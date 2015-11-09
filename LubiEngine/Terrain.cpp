@@ -2,7 +2,7 @@
 
 
 Terrain::Terrain()
-	: m_indexBuffer(0), m_vertexBuffer(0), m_texture(0)
+: m_indexBuffer(0), m_vertexBuffer(0), m_texture(0)
 {
 	m_terrain.x = 50;
 	m_terrain.y = 50;

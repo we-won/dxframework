@@ -2,7 +2,7 @@
 
 
 InputLx::InputLx()
-	: m_nMouseXChange(0), m_nMouseYChange(0), m_nMouse2DX(0), m_nMouse2DY(0), m_bLMB(0), m_bRMB(0)
+: m_nMouseXChange(0), m_nMouseYChange(0), m_nMouse2DX(0), m_nMouse2DY(0), m_bLMB(0), m_bRMB(0)
 {
 }
 

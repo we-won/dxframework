@@ -2,9 +2,9 @@
 
 
 Application::Application()
-	: m_dxBase(0), m_colorShader(0), m_textureShader(0), m_fontShader(0), m_camera(0), m_timer(0), m_input(0),
-		m_terrain(0), m_text(0), m_cube(0), m_cube_2(0),
-		m_rightClickState(0)
+: m_dxBase(0), m_colorShader(0), m_textureShader(0), m_fontShader(0), m_camera(0), m_timer(0), m_input(0), m_light(0),
+	m_terrain(0), m_text(0), m_cube(0), m_cube_2(0),
+	m_rightClickState(0)
 {
 }
 
@@ -80,6 +80,17 @@ bool Application::Initialize(HINSTANCE hInstance, HWND hwnd, int width, int heig
 	}
 
 	if (!m_input->Initialize(hwnd, width, height))
+	{
+		return false;
+	}
+
+	m_light = new LightLx;
+	if (!m_light)
+	{
+		return false;
+	}
+
+	if (!m_light->Initialize(m_dxBase->GetDevice()))
 	{
 		return false;
 	}
@@ -182,6 +193,12 @@ void Application::Shutdown()
 	{
 		delete m_input;
 		m_input = 0;
+	}
+
+	if (m_light)
+	{
+		delete m_light;
+		m_light = 0;
 	}
 
 	if (m_terrain)
@@ -295,6 +312,10 @@ bool Application::RenderGraphics()
 		return false;
 	}
 
+	//HLSL per frame lighting effect off (dir to 0, ambient to 1, diff to 0)
+	m_light->SetLightEffectsOff();
+	m_light->ApplyLight(m_dxBase->GetDeviceContext());
+
 	//Terrain
 	worldMatrix = m_terrain->GetWorldMatrix();
 
@@ -304,6 +325,10 @@ bool Application::RenderGraphics()
 	{
 		return false;
 	}
+	
+	//HLSL per frame lighting effect on
+	m_light->SetLightEffectsOn();
+	m_light->ApplyLight(m_dxBase->GetDeviceContext());
 
 	//First Cube
 	worldMatrix = m_cube->GetWorldMatrix();
