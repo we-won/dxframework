@@ -23,6 +23,7 @@ private:
 	struct cbPerFrame
 	{
 		Light light;
+		XMFLOAT4X4 VP;
 	};
 
 public:
@@ -36,10 +37,19 @@ public:
 	void SetLightEffectsOff();
 	void ApplyLight(ID3D11DeviceContext* deviceContext);
 
+	bool GenerateViewMatrix();
+	bool GenerateProjectionMatrix();
+
 private:
 	ID3D11Buffer* m_cbPerFrameBuffer;
 	Light m_light;
 	cbPerFrame m_constbuffPerFrame;
+
+	XMFLOAT4 m_lookAt;
+	XMFLOAT4 m_up;
+
+	XMFLOAT4X4 m_viewMatrix;
+	XMFLOAT4X4 m_projectionMatrix;
 };
 
 #endif

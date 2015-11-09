@@ -312,9 +312,12 @@ bool Application::RenderGraphics()
 		return false;
 	}
 
-	//HLSL per frame lighting effect off (dir to 0, ambient to 1, diff to 0)
-	m_light->SetLightEffectsOff();
+	m_light->SetLightEffectsOn();
 	m_light->ApplyLight(m_dxBase->GetDeviceContext());
+
+	//HLSL per frame lighting effect off (dir to 0, ambient to 1, diff to 0)
+	//m_light->SetLightEffectsOff();
+	//m_light->ApplyLight(m_dxBase->GetDeviceContext());
 
 	//Terrain
 	worldMatrix = m_terrain->GetWorldMatrix();
@@ -327,8 +330,8 @@ bool Application::RenderGraphics()
 	}
 	
 	//HLSL per frame lighting effect on
-	m_light->SetLightEffectsOn();
-	m_light->ApplyLight(m_dxBase->GetDeviceContext());
+	//m_light->SetLightEffectsOn();
+	//m_light->ApplyLight(m_dxBase->GetDeviceContext());
 
 	//First Cube
 	worldMatrix = m_cube->GetWorldMatrix();
