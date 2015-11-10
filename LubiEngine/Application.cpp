@@ -2,7 +2,7 @@
 
 
 Application::Application()
-: m_dxBase(0), m_colorShader(0), m_textureShader(0), m_fontShader(0), m_camera(0), m_timer(0), m_input(0), m_light(0),
+: m_dxBase(0), m_colorShader(0), m_textureShader(0), m_fontShader(0), m_camera(0), m_timer(0), m_input(0), m_light(0), m_renderTexture(0), m_depthShader(0),
 	m_terrain(0), m_text(0), m_cube(0), m_cube_2(0),
 	m_rightClickState(0)
 {
@@ -26,6 +26,7 @@ bool Application::Initialize(HINSTANCE hInstance, HWND hwnd, int width, int heig
 
 	if (!m_dxBase->Initialize(hwnd, width, height, FULL_SCREEN, VSYNC_ENABLED))
 	{
+		MessageBox(0, "Error initializing DXBase!", "Compile Error", MB_OK);
 		return false;
 	}
 
@@ -37,6 +38,7 @@ bool Application::Initialize(HINSTANCE hInstance, HWND hwnd, int width, int heig
 
 	if (!m_colorShader->Initialize(m_dxBase->GetDevice()))
 	{
+		MessageBox(0, "Error initializing Color Shader!", "Compile Error", MB_OK);
 		return false;
 	}
 
@@ -48,6 +50,7 @@ bool Application::Initialize(HINSTANCE hInstance, HWND hwnd, int width, int heig
 
 	if (!m_textureShader->Initialize(m_dxBase->GetDevice()))
 	{
+		MessageBox(0, "Error initializing Texture Shader!", "Compile Error", MB_OK);
 		return false;
 	}
 
@@ -59,83 +62,7 @@ bool Application::Initialize(HINSTANCE hInstance, HWND hwnd, int width, int heig
 
 	if (!m_fontShader->Initialize(m_dxBase->GetDevice()))
 	{
-		return false;
-	}
-
-	m_timer = new TimerLx;
-	if (!m_timer)
-	{
-		return false;
-	}
-
-	if (!m_timer->Initialize())
-	{
-		return false;
-	}
-
-	m_input = new InputLx;
-	if (!m_input)
-	{
-		return false;
-	}
-
-	if (!m_input->Initialize(hwnd, width, height))
-	{
-		return false;
-	}
-
-	m_light = new LightLx;
-	if (!m_light)
-	{
-		return false;
-	}
-
-	if (!m_light->Initialize(m_dxBase->GetDevice()))
-	{
-		return false;
-	}
-
-	m_terrain = new Terrain;
-	if (!m_terrain)
-	{
-		return false;
-	}
-
-	if (!m_terrain->Initialize(m_dxBase->GetDevice(), m_dxBase->GetDeviceContext()))
-	{
-		return false;
-	}
-
-	m_text = new TextManager;
-	if (!m_text)
-	{
-		return false;
-	}
-
-	if (!m_text->Initialize(m_dxBase->GetDevice()))
-	{
-		return false;
-	}
-
-	m_cube = new Cube;
-	if (!m_cube)
-	{
-		return false;
-	}
-
-	if (!m_cube->Initialize(m_dxBase->GetDevice(), m_dxBase->GetDeviceContext()))
-	{
-		return false;
-	}
-
-	m_cube_2 = new Cube;
-	if (!m_cube_2)
-	{
-		return false;
-	}
-
-	if (!m_cube_2->Initialize(m_dxBase->GetDevice(), m_dxBase->GetDeviceContext()))
-	{
+		MessageBox(0, "Error initializing Font Shader!", "Compile Error", MB_OK);
 		return false;
 	}
 
@@ -147,6 +74,117 @@ bool Application::Initialize(HINSTANCE hInstance, HWND hwnd, int width, int heig
 
 	if (!m_camera->Render())
 	{
+		MessageBox(0, "Error initializing Camera!", "Compile Error", MB_OK);
+		return false;
+	}
+
+	m_timer = new TimerLx;
+	if (!m_timer)
+	{
+		return false;
+	}
+
+	if (!m_timer->Initialize())
+	{
+		MessageBox(0, "Error initializing Timer!", "Compile Error", MB_OK);
+		return false;
+	}
+
+	m_input = new InputLx;
+	if (!m_input)
+	{
+		return false;
+	}
+
+	if (!m_input->Initialize(hwnd, width, height))
+	{
+		MessageBox(0, "Error initializing Input!", "Compile Error", MB_OK);
+		return false;
+	}
+
+	m_light = new LightLx;
+	if (!m_light)
+	{
+		return false;
+	}
+
+	if (!m_light->Initialize(m_dxBase->GetDevice()))
+	{
+		MessageBox(0, "Error initializing Light!", "Compile Error", MB_OK);
+		return false;
+	}
+
+	m_renderTexture = new RenderTexture;
+	if (!m_renderTexture)
+	{
+		return false;
+	}
+
+	if (!m_renderTexture->Initialize(m_dxBase->GetDevice(), 1024, 1024, 0.0f, 1000.0f))
+	{
+		MessageBox(0, "Error initializing Render Texture!", "Compile Error", MB_OK);
+		return false;
+	}
+
+	m_depthShader = new DepthShader;
+	if (!m_depthShader)
+	{
+		return false;
+	}
+
+	if (!m_depthShader->Initialize(m_dxBase->GetDevice()))
+	{
+		MessageBox(0, "Error initializing Depth Shader!", "Compile Error", MB_OK);
+		return false;
+	}
+
+	// --- DISPLAYS ---
+
+	m_terrain = new Terrain;
+	if (!m_terrain)
+	{
+		return false;
+	}
+
+	if (!m_terrain->Initialize(m_dxBase->GetDevice(), m_dxBase->GetDeviceContext()))
+	{
+		MessageBox(0, "Error initializing Terrain!", "Compile Error", MB_OK);
+		return false;
+	}
+
+	m_text = new TextManager;
+	if (!m_text)
+	{
+		return false;
+	}
+
+	if (!m_text->Initialize(m_dxBase->GetDevice()))
+	{
+		MessageBox(0, "Error initializing Text Manager!", "Compile Error", MB_OK);
+		return false;
+	}
+
+	m_cube = new Cube;
+	if (!m_cube)
+	{
+		return false;
+	}
+
+	if (!m_cube->Initialize(m_dxBase->GetDevice(), m_dxBase->GetDeviceContext()))
+	{
+		MessageBox(0, "Error initializing Cube 1!", "Compile Error", MB_OK);
+		return false;
+	}
+
+	m_cube_2 = new Cube;
+	if (!m_cube_2)
+	{
+		return false;
+	}
+
+	if (!m_cube_2->Initialize(m_dxBase->GetDevice(), m_dxBase->GetDeviceContext()))
+	{
+		MessageBox(0, "Error initializing Cube 2!", "Compile Error", MB_OK);
 		return false;
 	}
 
@@ -200,6 +238,20 @@ void Application::Shutdown()
 		delete m_light;
 		m_light = 0;
 	}
+
+	if (m_renderTexture)
+	{
+		delete m_renderTexture;
+		m_renderTexture = 0;
+	}
+
+	if (m_depthShader)
+	{
+		delete m_depthShader;
+		m_depthShader = 0;
+	}
+
+	// --- DISPLAYS ---
 
 	if (m_terrain)
 	{
@@ -295,11 +347,66 @@ bool Application::Frame()
 	return result;
 }
 
+bool Application::RenderSceneToTexture()
+{
+	bool result;
+	XMFLOAT4X4 lightViewMatrix, lightProjectionMatrix;
+
+	//m_light->SetLightEffectsOn();
+	//m_light->ApplyLight(m_dxBase->GetDeviceContext());
+
+	lightViewMatrix = m_light->GetViewMatrix();
+	lightProjectionMatrix = m_light->GetProjectionMatrix();
+
+	m_renderTexture->SetRenderTarget(m_dxBase->GetDeviceContext());
+
+	m_renderTexture->ClearRenderTarget(m_dxBase->GetDeviceContext());
+
+	// First Cube
+	m_cube->Render(m_dxBase->GetDeviceContext());
+	result = m_depthShader->Render(m_dxBase->GetDeviceContext(), m_cube->GetIndexCount(), m_worldMatrix, lightViewMatrix, lightProjectionMatrix);
+	if (!result)
+	{
+		return false;
+	}
+
+	// Second Cube
+	m_cube_2->Render(m_dxBase->GetDeviceContext());
+	result = m_depthShader->Render(m_dxBase->GetDeviceContext(), m_cube_2->GetIndexCount(), m_worldMatrix, lightViewMatrix, lightProjectionMatrix);
+	if (!result)
+	{
+		return false;
+	}
+
+	// Terrain
+	m_terrain->Render(m_dxBase->GetDeviceContext());
+	result = m_depthShader->Render(m_dxBase->GetDeviceContext(), m_terrain->GetIndexCount(), m_worldMatrix, lightViewMatrix, lightProjectionMatrix);
+	if (!result)
+	{
+		return false;
+	}
+
+	m_dxBase->SetBackBufferRenderTarget();
+
+	m_dxBase->ResetViewport();
+
+	return true;
+}
+
 bool Application::RenderGraphics()
 {
 	bool result;
 	XMFLOAT4X4 worldMatrix;
 	
+	m_light->SetLightEffectsOn();
+	m_light->ApplyLight(m_dxBase->GetDeviceContext());
+
+	result = RenderSceneToTexture();
+	if (!result)
+	{
+		return false;
+	}
+
 	result = m_dxBase->InitScene();
 	if (!result)
 	{
@@ -312,68 +419,66 @@ bool Application::RenderGraphics()
 		return false;
 	}
 
-	m_light->SetLightEffectsOn();
-	m_light->ApplyLight(m_dxBase->GetDeviceContext());
-
 	//HLSL per frame lighting effect off (dir to 0, ambient to 1, diff to 0)
 	//m_light->SetLightEffectsOff();
 	//m_light->ApplyLight(m_dxBase->GetDeviceContext());
 
-	//Terrain
-	worldMatrix = m_terrain->GetWorldMatrix();
-
-	m_terrain->Render(m_dxBase->GetDeviceContext());
-	result = m_textureShader->Render(m_dxBase->GetDeviceContext(), worldMatrix, m_viewMatrix, m_projectionMatrix, m_terrain->GetIndexCount(), m_terrain->GetTexture(), m_light->GetViewMatrix(), m_light->GetProjectionMatrix(), m_dxBase->GetShaderResourceView());
-	if (!result)
-	{
-		return false;
-	}
 	
 	//HLSL per frame lighting effect on
 	//m_light->SetLightEffectsOn();
 	//m_light->ApplyLight(m_dxBase->GetDeviceContext());
 
-	//First Cube
+	// First Cube
 	worldMatrix = m_cube->GetWorldMatrix();
 
 	m_cube->Render(m_dxBase->GetDeviceContext());
-	result = m_textureShader->Render(m_dxBase->GetDeviceContext(), worldMatrix, m_viewMatrix, m_projectionMatrix, m_cube->GetIndexCount(), m_cube->GetTexture(), m_light->GetViewMatrix(), m_light->GetProjectionMatrix(), m_dxBase->GetShaderResourceView());
+	result = m_textureShader->Render(m_dxBase->GetDeviceContext(), worldMatrix, m_viewMatrix, m_projectionMatrix, m_cube->GetIndexCount(), m_cube->GetTexture(), m_light->GetViewMatrix(), m_light->GetProjectionMatrix(), m_renderTexture->GetShaderResourceView());
 	if (!result)
 	{
 		return false;
 	}
 
-	//Second Cube
+	// Second Cube
 	worldMatrix = m_cube_2->GetWorldMatrix();
 
 	m_cube_2->Render(m_dxBase->GetDeviceContext());
-	result = m_textureShader->Render(m_dxBase->GetDeviceContext(), worldMatrix, m_viewMatrix, m_projectionMatrix, m_cube_2->GetIndexCount(), m_cube_2->GetTexture(), m_light->GetViewMatrix(), m_light->GetProjectionMatrix(), m_dxBase->GetShaderResourceView());
+	result = m_textureShader->Render(m_dxBase->GetDeviceContext(), worldMatrix, m_viewMatrix, m_projectionMatrix, m_cube_2->GetIndexCount(), m_cube_2->GetTexture(), m_light->GetViewMatrix(), m_light->GetProjectionMatrix(), m_renderTexture->GetShaderResourceView());
 	if (!result)
 	{
 		return false;
 	}
 
-	// Turn off the Z buffer to begin all 2D rendering.
-	m_dxBase->TurnZBufferOff();
+	// Terrain
+	worldMatrix = m_terrain->GetWorldMatrix();
 
-	// Turn on the alpha blending before rendering the text.
-	m_dxBase->TurnOnAlphaBlending();
-
-	//Text
-	worldMatrix = m_text->GetWorldMatrix();
-
-	m_text->Render(m_dxBase->GetDeviceContext(), "HELLO");
-	result = m_fontShader->Render(m_dxBase->GetDeviceContext(), m_text->GetVertexCount(), m_text->GetWorldMatrix(), m_viewMatrix, m_orthographicMatrix, m_text->GetTexture());
+	m_terrain->Render(m_dxBase->GetDeviceContext());
+	result = m_textureShader->Render(m_dxBase->GetDeviceContext(), worldMatrix, m_viewMatrix, m_projectionMatrix, m_terrain->GetIndexCount(), m_terrain->GetTexture(), m_light->GetViewMatrix(), m_light->GetProjectionMatrix(), m_renderTexture->GetShaderResourceView());
 	if (!result)
 	{
 		return false;
 	}
 
-	// Turn off alpha blending after rendering the text.
-	m_dxBase->TurnOffAlphaBlending();
+	//// Turn off the Z buffer to begin all 2D rendering.
+	//m_dxBase->TurnZBufferOff();
 
-	// Turn the Z buffer back on now that all 2D rendering has completed.
-	m_dxBase->TurnZBufferOn();
+	//// Turn on the alpha blending before rendering the text.
+	//m_dxBase->TurnOnAlphaBlending();
+
+	////Text
+	//worldMatrix = m_text->GetWorldMatrix();
+
+	//m_text->Render(m_dxBase->GetDeviceContext(), "HELLO");
+	//result = m_fontShader->Render(m_dxBase->GetDeviceContext(), m_text->GetVertexCount(), m_text->GetWorldMatrix(), m_viewMatrix, m_orthographicMatrix, m_text->GetTexture());
+	//if (!result)
+	//{
+	//	return false;
+	//}
+
+	//// Turn off alpha blending after rendering the text.
+	//m_dxBase->TurnOffAlphaBlending();
+
+	//// Turn the Z buffer back on now that all 2D rendering has completed.
+	//m_dxBase->TurnZBufferOn();
 	
 	m_dxBase->Present();
 

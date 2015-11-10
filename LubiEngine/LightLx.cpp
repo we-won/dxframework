@@ -59,7 +59,7 @@ void LightLx::ReleaseObjects()
 
 void LightLx::SetLightEffectsOn()
 {
-	m_light.dir = XMFLOAT3(0.25f, 1.5f, -10.0f);
+	m_light.dir = XMFLOAT3(5.0f, 5.5f, -5.0f);
 	m_light.pad = 0.0f;
 	m_light.ambient = XMFLOAT4(0.25f, 0.25f, 0.25f, 1.0f);
 	m_light.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -98,7 +98,7 @@ bool LightLx::GenerateViewMatrix()
 {
 	XMVECTOR camPosition, camTarget, camUp;
 
-	XMFLOAT4 position = XMFLOAT4(0.25f, 1.5f, -10.0f, 0.0f);
+	XMFLOAT4 position = XMFLOAT4(5.0f, 5.5f, -5.0f, 0.0f);
 	m_lookAt = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	m_up = XMFLOAT4(0.0f, 1.0f, 0.0f, 0.0f);
 
@@ -115,7 +115,7 @@ bool LightLx::GenerateViewMatrix()
 
 bool LightLx::GenerateProjectionMatrix()
 {
-	XMMATRIX projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, float(800)/float(600), 0.1f, 1000.0f);
+	XMMATRIX projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, 1.0f, 0.1f, 1000.0f);
 	XMStoreFloat4x4(&m_projectionMatrix, projection);
 
 	return true;

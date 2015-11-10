@@ -6,7 +6,6 @@ DXBase::DXBase()
 	m_depthStencilState(0), m_depthDisabledStencilState(0), m_rasterState(0), m_noCullRasterState(0), m_alphaEnableBlendingState(0), m_alphaDisableBlendingState(0)
 {
 	m_vsync_enabled = false;
-	m_shaderResourceView = 0;
 }
 
 
@@ -119,19 +118,19 @@ bool DXBase::Initialize(HWND hwnd, int width, int height, bool fullscreen, bool 
 	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 
 	// Create the Viewport
-	D3D11_VIEWPORT viewport;
-	ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
+	//D3D11_VIEWPORT viewport;
+	//ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
 
-	viewport.TopLeftX = 0;
-	viewport.TopLeftY = 0;
-	viewport.Width = (float)width;
-	viewport.Height = (float)height;
+	m_viewport.TopLeftX = 0;
+	m_viewport.TopLeftY = 0;
+	m_viewport.Width = (float)width;
+	m_viewport.Height = (float)height;
 
-	viewport.MinDepth = 0.0f;
-	viewport.MaxDepth = 1.0f;
+	m_viewport.MinDepth = 0.0f;
+	m_viewport.MaxDepth = 1.0f;
 
 	// Set the Viewport
-	m_deviceContext->RSSetViewports(1, &viewport);
+	m_deviceContext->RSSetViewports(1, &m_viewport);
 
 	// Create default raster state for opaque objects
 	CreateRasterState();
@@ -154,20 +153,6 @@ bool DXBase::Initialize(HWND hwnd, int width, int height, bool fullscreen, bool 
 
 	XMMATRIX ortho = XMMatrixOrthographicLH((float)width, (float)height, 0.1f, 1000.0f);
 	XMStoreFloat4x4(&m_ortho, ortho);
-	
-	// I dont know -----------------------------
-	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
-
-	// Setup the description of the shader resource view.
-	shaderResourceViewDesc.Format = depthBufferDesc.Format;
-	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
-	shaderResourceViewDesc.Texture2D.MipLevels = 1;
-
-	// Create the shader resource view.
-	m_device->CreateShaderResourceView(m_depthStencilBuffer, &shaderResourceViewDesc, &m_shaderResourceView);
-
-	// I dont know -----------------------------
 
 	return true;
 }
@@ -380,13 +365,6 @@ void DXBase::ReleaseObjects()
 		m_alphaDisableBlendingState->Release();
 		m_alphaDisableBlendingState = 0;
 	}
-
-	// I DONT KNOW
-	if (m_shaderResourceView)
-	{
-		m_shaderResourceView->Release();
-		m_shaderResourceView = 0;
-	}
 }
 
 bool DXBase::InitScene()
@@ -468,4 +446,21 @@ void DXBase::Present()
 		// Present as fast as possible.
 		m_swapChain->Present(0, 0);
 	}
+}
+
+void DXBase::SetBackBufferRenderTarget()
+{
+	// Bind the render target view and depth stencil buffer to the output render pipeline.
+	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
+
+	return;
+}
+
+
+void DXBase::ResetViewport()
+{
+	// Set the viewport.
+    m_deviceContext->RSSetViewports(1, &m_viewport);
+
+	return;
 }

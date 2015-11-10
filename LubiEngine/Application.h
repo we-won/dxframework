@@ -12,6 +12,8 @@ const bool VSYNC_ENABLED = false;
 #include "TimerLx.h"
 #include "InputLx.h"
 #include "LightLx.h"
+#include "RenderTexture.h"
+#include "DepthShader.h"
 
 #include "Terrain.h"
 #include "TextManager.h"
@@ -30,6 +32,7 @@ public:
 	void HandleInput(LPARAM lParam);
 
 private:
+	bool RenderSceneToTexture();
 	bool RenderGraphics();
 
 private:
@@ -42,6 +45,8 @@ private:
 	TimerLx* m_timer;
 	InputLx* m_input;
 	LightLx* m_light;
+	RenderTexture* m_renderTexture;
+	DepthShader* m_depthShader;
 
 	XMFLOAT4X4 m_worldMatrix;
 	XMFLOAT4X4 m_viewMatrix; 

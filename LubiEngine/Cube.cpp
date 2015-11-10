@@ -158,7 +158,7 @@ void Cube::ReleaseObjects()
 
 void Cube::MoveTo(float x, float z)
 {
-	XMMATRIX Translation = XMMatrixTranslation(x, 0.0f, z);
+	XMMATRIX Translation = XMMatrixTranslation(x, 2.0f, z);
 
 	//Set cube1's world space using the transformations
 	XMMATRIX cubeWorld = Translation;
@@ -176,7 +176,7 @@ bool Cube::Rotate(float time)
 	//Define cube1's world space matrix
 	XMVECTOR rotaxis = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	XMMATRIX Rotation = XMMatrixRotationAxis(rotaxis, _rot);
-	XMMATRIX Translation = XMMatrixTranslation(0.0f, 0.0f, 0.0f);
+	XMMATRIX Translation = XMMatrixTranslation(0.0f, 1.0f, 0.0f);
 
 	//Set cube1's world space using the transformations
 	XMMATRIX cubeWorld = Translation;
@@ -196,7 +196,7 @@ bool Cube::Spin(float time)
 	//Define cube2's world space matrix
 	XMVECTOR rotaxis = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	XMMATRIX Rotation = XMMatrixRotationAxis(rotaxis, -_rot);
-	XMMATRIX Translation = XMMatrixTranslation(0.0f, 0.0f, 0.0f);
+	XMMATRIX Translation = XMMatrixTranslation(0.0f, 1.0f, 0.0f);
 	XMMATRIX Scale = XMMatrixScaling(1.3f, 1.3f, 1.3f);
 
 	//Set cube2's world space matrix

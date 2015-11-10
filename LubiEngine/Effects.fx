@@ -18,8 +18,8 @@ cbuffer cbPerObject
 	float4x4 LightWVP;
 };
 
-Texture2D ObjTexture;
-Texture2D depthMapTexture;
+Texture2D ObjTexture : register(t0);
+Texture2D depthMapTexture : register(t1);
 SamplerState ObjSamplerState;
 
 struct VS_OUTPUT
@@ -35,7 +35,7 @@ VS_OUTPUT VS(float4 inPos : POSITION, float2 inTexCoord : TEXCOORD, float3 norma
 {
 	VS_OUTPUT output;
 	float4 worldPosition;
-	float3 tmpLightPos = float3(0.25f, 1.5f, -10.0f);
+	float3 tmpLightPos = float3(5.0f, 5.5f, -5.0f);
 	
     output.Pos = mul(inPos, WVP);
 	
@@ -53,6 +53,7 @@ VS_OUTPUT VS(float4 inPos : POSITION, float2 inTexCoord : TEXCOORD, float3 norma
 
 float4 PS(VS_OUTPUT input) : SV_TARGET
 {
+	
 	float bias;
 	float4 color;
 	float2 projectTexCoord;
@@ -71,23 +72,7 @@ float4 PS(VS_OUTPUT input) : SV_TARGET
 	projectTexCoord.x =  input.lightViewPosition.x / input.lightViewPosition.w / 2.0f + 0.5f;
 	projectTexCoord.y = -input.lightViewPosition.y / input.lightViewPosition.w / 2.0f + 0.5f;
 	
-	if((saturate(projectTexCoord.x) == projectTexCoord.x) && (saturate(projectTexCoord.y) == projectTexCoord.y))
-	{
-		depthValue = depthMapTexture.Sample(ObjSamplerState, projectTexCoord).r;
-		lightDepthValue = input.lightViewPosition.z / input.lightViewPosition.w;
-		lightDepthValue = lightDepthValue - bias;
-		
-		if(lightDepthValue < depthValue)
-		{
-			lightIntensity = saturate(dot(input.normal, input.lightPos));
-
-		    if(lightIntensity > 0.0f)
-			{
-				color += (light.diffuse * lightIntensity);
-				color = saturate(color);
-			}
-		}
-	}
+	
 	
 	textureColor = ObjTexture.Sample( ObjSamplerState, input.TexCoord );
     
