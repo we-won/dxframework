@@ -76,10 +76,10 @@ bool DepthShader::Initialize(ID3D11Device* device)
 	D3D11_BUFFER_DESC cbbd;
 	ZeroMemory(&cbbd, sizeof(D3D11_BUFFER_DESC));
 
-	cbbd.Usage = D3D11_USAGE_DYNAMIC;
+	cbbd.Usage = D3D11_USAGE_DEFAULT;
 	cbbd.ByteWidth = sizeof(cbPerObject);
 	cbbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cbbd.CPUAccessFlags = 0;
 	cbbd.MiscFlags = 0;
 	cbbd.StructureByteStride = 0;
 
@@ -146,7 +146,6 @@ bool DepthShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMFLOA
 	m_cbPerObj.WVP = m_WVP;
 
 	deviceContext->UpdateSubresource(m_cbPerObjectBuffer, 0, NULL, &m_cbPerObj, 0, 0);
-
 	deviceContext->VSSetConstantBuffers(0, 1, &m_cbPerObjectBuffer);
 
 	return true;

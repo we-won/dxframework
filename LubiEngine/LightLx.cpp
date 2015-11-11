@@ -71,36 +71,23 @@ void LightLx::SetLightEffectsOff()
 
 void LightLx::ApplyLight(ID3D11DeviceContext* deviceContext)
 {	
-	/*XMMATRIX viewMat, projectionMat;
+	//m_constbuffPerFrame.light = m_light;
 
-	viewMat = XMLoadFloat4x4(&m_viewMatrix);
-	projectionMat = XMLoadFloat4x4(&m_projectionMatrix);
-
-	XMFLOAT4X4 View;
-	XMStoreFloat4x4(&View, XMMatrixTranspose(viewMat));
-
-	XMFLOAT4X4 Projection;
-	XMStoreFloat4x4(&Projection, XMMatrixTranspose(projectionMat));*/
-	
-	m_constbuffPerFrame.light = m_light;
-	/*m_constbuffPerFrame.lightViewMatrix = View;
-	m_constbuffPerFrame.lightProjectionMatrix = Projection;*/
-
-	deviceContext->UpdateSubresource(m_cbPerFrameBuffer, 0, NULL, &m_constbuffPerFrame, 0, 0);
-	deviceContext->PSSetConstantBuffers(0, 1, &m_cbPerFrameBuffer);
+	//deviceContext->UpdateSubresource(m_cbPerFrameBuffer, 0, NULL, &m_constbuffPerFrame, 0, 0);
+	//deviceContext->PSSetConstantBuffers(0, 1, &m_cbPerFrameBuffer);
 }
 
 bool LightLx::GenerateViewMatrix()
 {
 	XMVECTOR camPosition, camTarget, camUp;
 
-	XMFLOAT4 position = XMFLOAT4(1.0f, 8.0f, -5.0f, 0.0f);
-	XMFLOAT4 lookAt = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	XMFLOAT4 up = XMFLOAT4(0.0f, 1.0f, 0.0f, 0.0f);
+	XMFLOAT3 position = XMFLOAT3(5.0f, 5.0f, -5.0f);
+	XMFLOAT3 lookAt = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3 up = XMFLOAT3(0.0f, 1.0f, 0.0f);
 
-	camPosition = XMLoadFloat4(&position);
-	camTarget = XMLoadFloat4(&lookAt);
-	camUp = XMLoadFloat4(&up);
+	camPosition = XMLoadFloat3(&position);
+	camTarget = XMLoadFloat3(&lookAt);
+	camUp = XMLoadFloat3(&up);
 
 	//Set the View matrix
 	XMMATRIX view = XMMatrixLookAtLH(camPosition, camTarget, camUp);

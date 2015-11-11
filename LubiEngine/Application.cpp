@@ -120,7 +120,7 @@ bool Application::Initialize(HINSTANCE hInstance, HWND hwnd, int width, int heig
 		return false;
 	}
 
-	if (!m_renderTexture->Initialize(m_dxBase->GetDevice(), 1024, 1024, 0.0f, 1000.0f))
+	if (!m_renderTexture->Initialize(m_dxBase->GetDevice(), 1, 1, 1.0f, 100.0f))
 	{
 		MessageBox(0, "Error initializing Render Texture!", "Compile Error", MB_OK);
 		return false;
@@ -366,31 +366,31 @@ bool Application::RenderSceneToTexture()
 	worldMatrix = m_cube->GetWorldMatrix();
 
 	m_cube->Render(m_dxBase->GetDeviceContext());
-	result = m_depthShader->Render(m_dxBase->GetDeviceContext(), m_cube->GetIndexCount(), worldMatrix, lightViewMatrix, lightProjectionMatrix);
+	/*result = m_depthShader->Render(m_dxBase->GetDeviceContext(), m_cube->GetIndexCount(), worldMatrix, lightViewMatrix, lightProjectionMatrix);
 	if (!result)
 	{
 		return false;
-	}
+	}*/
 
 	// Second Cube
 	worldMatrix = m_cube_2->GetWorldMatrix();
 
 	m_cube_2->Render(m_dxBase->GetDeviceContext());
-	result = m_depthShader->Render(m_dxBase->GetDeviceContext(), m_cube_2->GetIndexCount(), worldMatrix, lightViewMatrix, lightProjectionMatrix);
+	/*result = m_depthShader->Render(m_dxBase->GetDeviceContext(), m_cube_2->GetIndexCount(), worldMatrix, lightViewMatrix, lightProjectionMatrix);
 	if (!result)
 	{
 		return false;
-	}
+	}*/
 
 	// Terrain
 	worldMatrix = m_terrain->GetWorldMatrix();
 
 	m_terrain->Render(m_dxBase->GetDeviceContext());
-	result = m_depthShader->Render(m_dxBase->GetDeviceContext(), m_terrain->GetIndexCount(), worldMatrix, lightViewMatrix, lightProjectionMatrix);
+	/*result = m_depthShader->Render(m_dxBase->GetDeviceContext(), m_terrain->GetIndexCount(), worldMatrix, lightViewMatrix, lightProjectionMatrix);
 	if (!result)
 	{
 		return false;
-	}
+	}*/
 
 	m_dxBase->SetBackBufferRenderTarget();
 
@@ -404,8 +404,8 @@ bool Application::RenderGraphics()
 	bool result;
 	XMFLOAT4X4 worldMatrix;
 	
-	m_light->SetLightEffectsOn();
-	m_light->ApplyLight(m_dxBase->GetDeviceContext());
+	//m_light->SetLightEffectsOn();
+	//m_light->ApplyLight(m_dxBase->GetDeviceContext());
 
 	result = RenderSceneToTexture();
 	if (!result)
@@ -425,12 +425,6 @@ bool Application::RenderGraphics()
 		return false;
 	}
 
-	//HLSL per frame lighting effect off (dir to 0, ambient to 1, diff to 0)
-	//m_light->SetLightEffectsOff();
-	//m_light->ApplyLight(m_dxBase->GetDeviceContext());
-
-	
-	//HLSL per frame lighting effect on
 	//m_light->SetLightEffectsOn();
 	//m_light->ApplyLight(m_dxBase->GetDeviceContext());
 
@@ -453,6 +447,9 @@ bool Application::RenderGraphics()
 	{
 		return false;
 	}
+
+	//m_light->SetLightEffectsOff();
+	//m_light->ApplyLight(m_dxBase->GetDeviceContext());
 
 	// Terrain
 	worldMatrix = m_terrain->GetWorldMatrix();
