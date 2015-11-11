@@ -88,20 +88,6 @@ bool Cube::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 		20, 22, 23
 	};
 
-	D3D11_BUFFER_DESC indexBufferDesc;
-	ZeroMemory(&indexBufferDesc, sizeof(indexBufferDesc));
-
-	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	indexBufferDesc.ByteWidth = sizeof(DWORD) * _indexCount;
-	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	indexBufferDesc.CPUAccessFlags = 0;
-	indexBufferDesc.MiscFlags = 0;
-
-	D3D11_SUBRESOURCE_DATA iinitData;
-
-	iinitData.pSysMem = indices;
-	device->CreateBuffer(&indexBufferDesc, &iinitData, &_squareIndexBuffer);
-
 	D3D11_BUFFER_DESC vertexBufferDesc;
 	ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
 
@@ -110,12 +96,39 @@ bool Cube::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vertexBufferDesc.CPUAccessFlags = 0;
 	vertexBufferDesc.MiscFlags = 0;
+	vertexBufferDesc.StructureByteStride = 0;
 
 	D3D11_SUBRESOURCE_DATA vertexBufferData;
-
 	ZeroMemory(&vertexBufferData, sizeof(vertexBufferData));
+
 	vertexBufferData.pSysMem = v;
+	vertexBufferData.SysMemPitch = 0;
+	vertexBufferData.SysMemSlicePitch = 0;
+
 	hr = device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, &_squareVertBuffer);
+	if (FAILED(hr))
+	{
+		return false;
+	}
+
+	D3D11_BUFFER_DESC indexBufferDesc;
+	ZeroMemory(&indexBufferDesc, sizeof(indexBufferDesc));
+
+	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	indexBufferDesc.ByteWidth = sizeof(DWORD)* _indexCount;
+	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	indexBufferDesc.CPUAccessFlags = 0;
+	indexBufferDesc.MiscFlags = 0;
+	indexBufferDesc.StructureByteStride = 0;
+
+	D3D11_SUBRESOURCE_DATA iinitData;
+	ZeroMemory(&iinitData, sizeof(iinitData));
+
+	iinitData.pSysMem = indices;
+	iinitData.SysMemPitch = 0;
+	iinitData.SysMemSlicePitch = 0;
+
+	hr = device->CreateBuffer(&indexBufferDesc, &iinitData, &_squareIndexBuffer);
 	if (FAILED(hr))
 	{
 		return false;
@@ -211,8 +224,9 @@ void Cube::Render(ID3D11DeviceContext* deviceContext)
 	//Set the vertex buffer
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
-	deviceContext->IASetIndexBuffer(_squareIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
 	deviceContext->IASetVertexBuffers(0, 1, &_squareVertBuffer, &stride, &offset);
+	deviceContext->IASetIndexBuffer(_squareIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
 	//Set Primitive Topology
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

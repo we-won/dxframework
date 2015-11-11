@@ -120,14 +120,14 @@ bool DXBase::Initialize(HWND hwnd, int width, int height, bool fullscreen, bool 
 	// Create the Viewport
 	//D3D11_VIEWPORT viewport;
 	//ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
-
-	m_viewport.TopLeftX = 0;
-	m_viewport.TopLeftY = 0;
+	
 	m_viewport.Width = (float)width;
 	m_viewport.Height = (float)height;
-
 	m_viewport.MinDepth = 0.0f;
 	m_viewport.MaxDepth = 1.0f;
+	m_viewport.TopLeftX = 0.0f;
+	m_viewport.TopLeftY = 0.0f;
+	
 
 	// Set the Viewport
 	m_deviceContext->RSSetViewports(1, &m_viewport);
@@ -230,7 +230,7 @@ void DXBase::CreateRasterState()
 	rasterDesc.DepthClipEnable = TRUE;
 	rasterDesc.FillMode = D3D11_FILL_SOLID;
 	rasterDesc.FrontCounterClockwise = FALSE;
-	rasterDesc.MultisampleEnable = TRUE;
+	rasterDesc.MultisampleEnable = FALSE;
 	rasterDesc.ScissorEnable = FALSE;
 	rasterDesc.SlopeScaledDepthBias = 0.0f;
 

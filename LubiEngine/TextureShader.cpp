@@ -74,22 +74,6 @@ bool TextureShader::Initialize(ID3D11Device* device)
 	PS_Buffer->Release();
 	PS_Buffer = 0;
 
-	//Create the buffer to send to the cbuffer in effect file
-	D3D11_BUFFER_DESC cbbd;
-	ZeroMemory(&cbbd, sizeof(D3D11_BUFFER_DESC));
-
-	cbbd.Usage = D3D11_USAGE_DEFAULT;
-	cbbd.ByteWidth = sizeof(cbPerObject);
-	cbbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbbd.CPUAccessFlags = 0;
-	cbbd.MiscFlags = 0;
-
-	hr = device->CreateBuffer(&cbbd, NULL, &m_cbPerObjectBuffer);
-	if (FAILED(hr))
-	{
-		return false;
-	}
-
 	// Describe the Sample State
 	D3D11_SAMPLER_DESC sampDesc;
 	ZeroMemory(&sampDesc, sizeof(sampDesc));
@@ -110,6 +94,22 @@ bool TextureShader::Initialize(ID3D11Device* device)
 
 	//Create the Sample State
 	hr = device->CreateSamplerState(&sampDesc, &m_texSamplerState);
+	if (FAILED(hr))
+	{
+		return false;
+	}
+
+	//Create the buffer to send to the cbuffer in effect file
+	D3D11_BUFFER_DESC cbbd;
+	ZeroMemory(&cbbd, sizeof(D3D11_BUFFER_DESC));
+
+	cbbd.Usage = D3D11_USAGE_DEFAULT;
+	cbbd.ByteWidth = sizeof(cbPerObject);
+	cbbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cbbd.CPUAccessFlags = 0;
+	cbbd.MiscFlags = 0;
+
+	hr = device->CreateBuffer(&cbbd, NULL, &m_cbPerObjectBuffer);
 	if (FAILED(hr))
 	{
 		return false;
@@ -188,6 +188,9 @@ bool TextureShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMFL
 
 	XMMATRIX lightViewMat, lightProjectionMat;
 	
+	lightViewMat = XMLoadFloat4x4(&lightViewMatrix);
+	lightProjectionMat = XMLoadFloat4x4(&lightProjectionMatrix);
+
 	XMMATRIX LightWVPMatrix = worldMat * lightViewMat * lightProjectionMat;
 	
 	XMFLOAT4X4 LightWVP;
@@ -202,8 +205,6 @@ bool TextureShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMFL
 	deviceContext->PSSetShaderResources(0, 1, &texture);
 	deviceContext->PSSetShaderResources(1, 1, &depthMapTexture);
 
-	deviceContext->PSSetSamplers(0, 1, &m_texSamplerState);
-
 	return true;
 }
 
@@ -215,6 +216,9 @@ void TextureShader::RenderShader(ID3D11DeviceContext* deviceContext, int indexCo
 	//Set Vertex and Pixel Shaders
 	deviceContext->VSSetShader(m_VS, 0, 0);
 	deviceContext->PSSetShader(m_PS, 0, 0);
+	
+	// Set the sampler states in the pixel shader.
+	deviceContext->PSSetSamplers(0, 1, &m_texSamplerState);
 
 	//Draw
 	deviceContext->DrawIndexed(indexCount, 0, 0);

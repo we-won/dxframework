@@ -350,7 +350,7 @@ bool Application::Frame()
 bool Application::RenderSceneToTexture()
 {
 	bool result;
-	XMFLOAT4X4 lightViewMatrix, lightProjectionMatrix;
+	XMFLOAT4X4 worldMatrix, lightViewMatrix, lightProjectionMatrix;
 
 	//m_light->SetLightEffectsOn();
 	//m_light->ApplyLight(m_dxBase->GetDeviceContext());
@@ -363,24 +363,30 @@ bool Application::RenderSceneToTexture()
 	m_renderTexture->ClearRenderTarget(m_dxBase->GetDeviceContext());
 
 	// First Cube
+	worldMatrix = m_cube->GetWorldMatrix();
+
 	m_cube->Render(m_dxBase->GetDeviceContext());
-	result = m_depthShader->Render(m_dxBase->GetDeviceContext(), m_cube->GetIndexCount(), m_worldMatrix, lightViewMatrix, lightProjectionMatrix);
+	result = m_depthShader->Render(m_dxBase->GetDeviceContext(), m_cube->GetIndexCount(), worldMatrix, lightViewMatrix, lightProjectionMatrix);
 	if (!result)
 	{
 		return false;
 	}
 
 	// Second Cube
+	worldMatrix = m_cube_2->GetWorldMatrix();
+
 	m_cube_2->Render(m_dxBase->GetDeviceContext());
-	result = m_depthShader->Render(m_dxBase->GetDeviceContext(), m_cube_2->GetIndexCount(), m_worldMatrix, lightViewMatrix, lightProjectionMatrix);
+	result = m_depthShader->Render(m_dxBase->GetDeviceContext(), m_cube_2->GetIndexCount(), worldMatrix, lightViewMatrix, lightProjectionMatrix);
 	if (!result)
 	{
 		return false;
 	}
 
 	// Terrain
+	worldMatrix = m_terrain->GetWorldMatrix();
+
 	m_terrain->Render(m_dxBase->GetDeviceContext());
-	result = m_depthShader->Render(m_dxBase->GetDeviceContext(), m_terrain->GetIndexCount(), m_worldMatrix, lightViewMatrix, lightProjectionMatrix);
+	result = m_depthShader->Render(m_dxBase->GetDeviceContext(), m_terrain->GetIndexCount(), worldMatrix, lightViewMatrix, lightProjectionMatrix);
 	if (!result)
 	{
 		return false;

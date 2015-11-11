@@ -47,9 +47,6 @@ private:
 	Light m_light;
 	cbPerFrame m_constbuffPerFrame;
 
-	XMFLOAT4 m_lookAt;
-	XMFLOAT4 m_up;
-
 	XMFLOAT4X4 m_viewMatrix;
 	XMFLOAT4X4 m_projectionMatrix;
 };
