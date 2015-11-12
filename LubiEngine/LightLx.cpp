@@ -81,7 +81,7 @@ bool LightLx::GenerateViewMatrix()
 {
 	XMVECTOR camPosition, camTarget, camUp;
 
-	XMFLOAT3 position = XMFLOAT3(5.0f, 5.0f, -5.0f);
+	XMFLOAT3 position = XMFLOAT3(4.0f, 10.0f, -4.0f);
 	XMFLOAT3 lookAt = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3 up = XMFLOAT3(0.0f, 1.0f, 0.0f);
 

@@ -4,9 +4,9 @@
 Camera::Camera()
 {
 	//Camera information
-	m_camPosition = XMFLOAT4(0.0f, 20.0f, -8.0f, 0.0f);
-	m_camTarget = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	m_camUp = XMFLOAT4(0.0f, 1.0f, 0.0f, 0.0f);
+	m_camPosition = XMFLOAT3(0.0f, 20.0f, -8.0f);
+	m_camTarget = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_camUp = XMFLOAT3(0.0f, 1.0f, 0.0f);
 }
 
 
@@ -43,9 +43,9 @@ bool Camera::Render()
 {
 	XMVECTOR camPosition, camTarget, camUp;
 
-	camPosition = XMLoadFloat4(&m_camPosition);
-	camTarget = XMLoadFloat4(&m_camTarget);
-	camUp = XMLoadFloat4(&m_camUp);
+	camPosition = XMLoadFloat3(&m_camPosition);
+	camTarget = XMLoadFloat3(&m_camTarget);
+	camUp = XMLoadFloat3(&m_camUp);
 
 	//Set the View matrix
 	XMMATRIX view = XMMatrixLookAtLH(camPosition, camTarget, camUp);

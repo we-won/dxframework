@@ -260,7 +260,7 @@ bool TextureShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMFL
 
 	// Light position
 
-	light2.lightPosition = XMFLOAT3(5.0f, 5.0f, -5.0f);
+	light2.lightPosition = XMFLOAT3(4.0f, 10.0f, -4.0f);
 	light2.padding = 0.0f;
 
 	deviceContext->UpdateSubresource(m_lightBuffer2, 0, NULL, &light2, 0, 0);

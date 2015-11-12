@@ -3,9 +3,11 @@
 
 Application::Application()
 : m_dxBase(0), m_colorShader(0), m_textureShader(0), m_fontShader(0), m_camera(0), m_timer(0), m_input(0), m_light(0), m_renderTexture(0), m_depthShader(0),
-	m_terrain(0), m_text(0), m_cube(0), m_cube_2(0),
 	m_rightClickState(0)
 {
+	m_CubeModel = 0;
+	m_GroundModel = 0;
+	m_SphereModel = 0;
 }
 
 
@@ -120,7 +122,7 @@ bool Application::Initialize(HINSTANCE hInstance, HWND hwnd, int width, int heig
 		return false;
 	}
 
-	if (!m_renderTexture->Initialize(m_dxBase->GetDevice(), 1, 1, 1.0f, 100.0f))
+	if (!m_renderTexture->Initialize(m_dxBase->GetDevice(), 1024, 1024, 1.0f, 100.0f))
 	{
 		MessageBox(0, "Error initializing Render Texture!", "Compile Error", MB_OK);
 		return false;
@@ -139,54 +141,59 @@ bool Application::Initialize(HINSTANCE hInstance, HWND hwnd, int width, int heig
 	}
 
 	// --- DISPLAYS ---
-
-	m_terrain = new Terrain;
-	if (!m_terrain)
+	bool result;
+	
+	// Create the cube model object.
+	m_CubeModel = new ModelLx;
+	if(!m_CubeModel)
 	{
 		return false;
 	}
 
-	if (!m_terrain->Initialize(m_dxBase->GetDevice(), m_dxBase->GetDeviceContext()))
+	// Initialize the cube model object.
+	result = m_CubeModel->Initialize(m_dxBase->GetDevice(), "../LubiEngine/data/cube.txt", "wall01.dds");
+	if(!result)
 	{
-		MessageBox(0, "Error initializing Terrain!", "Compile Error", MB_OK);
+		MessageBox(hwnd, "Could not initialize the cube model object.", "Error", MB_OK);
 		return false;
 	}
 
-	m_text = new TextManager;
-	if (!m_text)
-	{
-		return false;
-	}
+	m_CubeModel->SetPosition(-2.0f, 2.0f, 0.0f);
 
-	if (!m_text->Initialize(m_dxBase->GetDevice()))
-	{
-		MessageBox(0, "Error initializing Text Manager!", "Compile Error", MB_OK);
-		return false;
-	}
-
-	m_cube = new Cube;
-	if (!m_cube)
+	// Create the cube model object.
+	m_SphereModel = new ModelLx;
+	if(!m_SphereModel)
 	{
 		return false;
 	}
 
-	if (!m_cube->Initialize(m_dxBase->GetDevice(), m_dxBase->GetDeviceContext()))
+	// Initialize the cube model object.
+	result = m_SphereModel->Initialize(m_dxBase->GetDevice(), "../LubiEngine/data/sphere.txt", "ice.dds");
+	if(!result)
 	{
-		MessageBox(0, "Error initializing Cube 1!", "Compile Error", MB_OK);
+		MessageBox(hwnd, "Could not initialize the sphere model object.", "Error", MB_OK);
 		return false;
 	}
 
-	m_cube_2 = new Cube;
-	if (!m_cube_2)
+	m_SphereModel->SetPosition(2.0f, 2.0f, 0.0f);
+
+	// Create the ground model object.
+	m_GroundModel = new ModelLx;
+	if(!m_GroundModel)
 	{
 		return false;
 	}
 
-	if (!m_cube_2->Initialize(m_dxBase->GetDevice(), m_dxBase->GetDeviceContext()))
+	// Initialize the ground model object.
+	result = m_GroundModel->Initialize(m_dxBase->GetDevice(), "../LubiEngine/data/plane01.txt", "metal001.dds");
+	if(!result)
 	{
-		MessageBox(0, "Error initializing Cube 2!", "Compile Error", MB_OK);
+		MessageBox(hwnd, "Could not initialize the ground model object.", "Error", MB_OK);
 		return false;
 	}
+
+	// Set the position for the ground model.
+	m_GroundModel->SetPosition(0.0f, 1.0f, 0.0f);
 
 	return true;
 }
@@ -235,50 +242,49 @@ void Application::Shutdown()
 
 	if (m_light)
 	{
+		m_light->ReleaseObjects();
 		delete m_light;
 		m_light = 0;
 	}
 
 	if (m_renderTexture)
 	{
+		m_renderTexture->ReleaseObjects();
 		delete m_renderTexture;
 		m_renderTexture = 0;
 	}
 
 	if (m_depthShader)
 	{
+		m_depthShader->ReleaseObjects();
 		delete m_depthShader;
 		m_depthShader = 0;
 	}
 
 	// --- DISPLAYS ---
 
-	if (m_terrain)
+	// Release the ground model object.
+	if(m_GroundModel)
 	{
-		m_terrain->ReleaseObjects();
-		delete m_terrain;
-		m_terrain = 0;
+		m_GroundModel->ReleaseObjects();
+		delete m_GroundModel;
+		m_GroundModel = 0;
 	}
 
-	if (m_text)
+	// Release the sphere model object.
+	if(m_SphereModel)
 	{
-		m_text->ReleaseObjects();
-		delete m_text;
-		m_text = 0;
+		m_SphereModel->ReleaseObjects();
+		delete m_SphereModel;
+		m_SphereModel = 0;
 	}
 
-	if (m_cube)
+	// Release the cube model object.
+	if(m_CubeModel)
 	{
-		m_cube->ReleaseObjects();
-		delete m_cube;
-		m_cube = 0;
-	}
-
-	if (m_cube_2)
-	{
-		m_cube_2->ReleaseObjects();
-		delete m_cube;
-		m_cube_2 = 0;
+		m_CubeModel->ReleaseObjects();
+		delete m_CubeModel;
+		m_CubeModel = 0;
 	}
 }
 
@@ -290,6 +296,12 @@ void Application::HandleInput(LPARAM lParam)
 bool Application::Frame()
 {
 	bool result;
+	
+	result = m_camera->Render();
+	if (!result)
+	{
+		return false;
+	}
 
 	// Get global matrices
 	m_worldMatrix = m_dxBase->GetWorldMatrix();
@@ -325,7 +337,7 @@ bool Application::Frame()
 		{
 			XMFLOAT3 mouse3D = m_input->Get3DMouseCoor(m_projectionMatrix, m_viewMatrix, m_worldMatrix);
 
-			m_cube_2->MoveTo(mouse3D.x, mouse3D.z);
+			m_CubeModel->SetPosition(mouse3D.x, 2.0f, mouse3D.z);
 			
 			m_rightClickState = 1;
 		}
@@ -334,9 +346,6 @@ bool Application::Frame()
 	{
 		m_rightClickState = 0;
 	}
-		 
-	m_cube->Spin(m_timer->GetTime());
-	//m_cube_2->Rotate(m_timer->GetTime());
 
 	result = RenderGraphics();
 	if (!result)
@@ -351,49 +360,52 @@ bool Application::RenderSceneToTexture()
 {
 	bool result;
 	XMFLOAT4X4 worldMatrix, lightViewMatrix, lightProjectionMatrix;
-
-	//m_light->SetLightEffectsOn();
-	//m_light->ApplyLight(m_dxBase->GetDeviceContext());
+	XMMATRIX worldMat;
+	float posX, posY, posZ;
 
 	lightViewMatrix = m_light->GetViewMatrix();
 	lightProjectionMatrix = m_light->GetProjectionMatrix();
 
 	m_renderTexture->SetRenderTarget(m_dxBase->GetDeviceContext());
-
 	m_renderTexture->ClearRenderTarget(m_dxBase->GetDeviceContext());
 
-	// First Cube
-	worldMatrix = m_cube->GetWorldMatrix();
+	// Cube
+	m_CubeModel->GetPosition(posX, posY, posZ);
+	worldMat = XMMatrixTranslation(posX, posY, posZ);
+	XMStoreFloat4x4(&worldMatrix, worldMat);
 
-	m_cube->Render(m_dxBase->GetDeviceContext());
-	/*result = m_depthShader->Render(m_dxBase->GetDeviceContext(), m_cube->GetIndexCount(), worldMatrix, lightViewMatrix, lightProjectionMatrix);
-	if (!result)
+	m_CubeModel->Render(m_dxBase->GetDeviceContext());
+	result = m_depthShader->Render(m_dxBase->GetDeviceContext(), m_CubeModel->GetIndexCount(), worldMatrix, lightViewMatrix, lightProjectionMatrix);
+	if(!result)
 	{
 		return false;
-	}*/
+	}
 
-	// Second Cube
-	worldMatrix = m_cube_2->GetWorldMatrix();
+	// Sphere
+	m_SphereModel->GetPosition(posX, posY, posZ);
+	worldMat = XMMatrixTranslation(posX, posY, posZ);
+	XMStoreFloat4x4(&worldMatrix, worldMat);
 
-	m_cube_2->Render(m_dxBase->GetDeviceContext());
-	/*result = m_depthShader->Render(m_dxBase->GetDeviceContext(), m_cube_2->GetIndexCount(), worldMatrix, lightViewMatrix, lightProjectionMatrix);
-	if (!result)
+	m_SphereModel->Render(m_dxBase->GetDeviceContext());
+	result = m_depthShader->Render(m_dxBase->GetDeviceContext(), m_SphereModel->GetIndexCount(), worldMatrix, lightViewMatrix, lightProjectionMatrix);
+	if(!result)
 	{
 		return false;
-	}*/
+	}
 
-	// Terrain
-	worldMatrix = m_terrain->GetWorldMatrix();
+	// Ground
+	m_GroundModel->GetPosition(posX, posY, posZ);
+	worldMat = XMMatrixTranslation(posX, posY, posZ);
+	XMStoreFloat4x4(&worldMatrix, worldMat);
 
-	m_terrain->Render(m_dxBase->GetDeviceContext());
-	/*result = m_depthShader->Render(m_dxBase->GetDeviceContext(), m_terrain->GetIndexCount(), worldMatrix, lightViewMatrix, lightProjectionMatrix);
-	if (!result)
+	m_GroundModel->Render(m_dxBase->GetDeviceContext());
+	result = m_depthShader->Render(m_dxBase->GetDeviceContext(), m_GroundModel->GetIndexCount(), worldMatrix, lightViewMatrix, lightProjectionMatrix);
+	if(!result)
 	{
 		return false;
-	}*/
+	}
 
 	m_dxBase->SetBackBufferRenderTarget();
-
 	m_dxBase->ResetViewport();
 
 	return true;
@@ -402,10 +414,9 @@ bool Application::RenderSceneToTexture()
 bool Application::RenderGraphics()
 {
 	bool result;
+	XMMATRIX worldMat;
 	XMFLOAT4X4 worldMatrix;
-	
-	//m_light->SetLightEffectsOn();
-	//m_light->ApplyLight(m_dxBase->GetDeviceContext());
+	float posX, posY, posZ;
 
 	result = RenderSceneToTexture();
 	if (!result)
@@ -418,71 +429,34 @@ bool Application::RenderGraphics()
 	{
 		return false;
 	}
-	
-	result = m_camera->Render();
-	if (!result)
-	{
-		return false;
-	}
 
-	//m_light->SetLightEffectsOn();
-	//m_light->ApplyLight(m_dxBase->GetDeviceContext());
+	// Cube
+	m_CubeModel->GetPosition(posX, posY, posZ);
+	worldMat = XMMatrixTranslation(posX, posY, posZ);
+	XMStoreFloat4x4(&worldMatrix, worldMat);
 
-	// First Cube
-	worldMatrix = m_cube->GetWorldMatrix();
+	m_CubeModel->Render(m_dxBase->GetDeviceContext());
+	result = m_textureShader->Render(m_dxBase->GetDeviceContext(), worldMatrix, m_viewMatrix, m_projectionMatrix, m_CubeModel->GetIndexCount(),
+										m_CubeModel->GetTexture(),  m_light->GetViewMatrix(), m_light->GetProjectionMatrix(), m_renderTexture->GetShaderResourceView());
 
-	m_cube->Render(m_dxBase->GetDeviceContext());
-	result = m_textureShader->Render(m_dxBase->GetDeviceContext(), worldMatrix, m_viewMatrix, m_projectionMatrix, m_cube->GetIndexCount(), m_cube->GetTexture(), m_light->GetViewMatrix(), m_light->GetProjectionMatrix(), m_renderTexture->GetShaderResourceView());
-	if (!result)
-	{
-		return false;
-	}
+	// Sphere
+	m_SphereModel->GetPosition(posX, posY, posZ);
+	worldMat = XMMatrixTranslation(posX, posY, posZ);
+	XMStoreFloat4x4(&worldMatrix, worldMat);
 
-	// Second Cube
-	worldMatrix = m_cube_2->GetWorldMatrix();
+	m_SphereModel->Render(m_dxBase->GetDeviceContext());
+	result = m_textureShader->Render(m_dxBase->GetDeviceContext(), worldMatrix, m_viewMatrix, m_projectionMatrix, m_SphereModel->GetIndexCount(),
+										m_SphereModel->GetTexture(),  m_light->GetViewMatrix(), m_light->GetProjectionMatrix(), m_renderTexture->GetShaderResourceView());
 
-	m_cube_2->Render(m_dxBase->GetDeviceContext());
-	result = m_textureShader->Render(m_dxBase->GetDeviceContext(), worldMatrix, m_viewMatrix, m_projectionMatrix, m_cube_2->GetIndexCount(), m_cube_2->GetTexture(), m_light->GetViewMatrix(), m_light->GetProjectionMatrix(), m_renderTexture->GetShaderResourceView());
-	if (!result)
-	{
-		return false;
-	}
+	// Ground
+	m_GroundModel->GetPosition(posX, posY, posZ);
+	worldMat = XMMatrixTranslation(posX, posY, posZ);
+	XMStoreFloat4x4(&worldMatrix, worldMat);
 
-	//m_light->SetLightEffectsOff();
-	//m_light->ApplyLight(m_dxBase->GetDeviceContext());
+	m_GroundModel->Render(m_dxBase->GetDeviceContext());
+	result = m_textureShader->Render(m_dxBase->GetDeviceContext(), worldMatrix, m_viewMatrix, m_projectionMatrix, m_GroundModel->GetIndexCount(),
+										m_GroundModel->GetTexture(),  m_light->GetViewMatrix(), m_light->GetProjectionMatrix(), m_renderTexture->GetShaderResourceView());
 
-	// Terrain
-	worldMatrix = m_terrain->GetWorldMatrix();
-
-	m_terrain->Render(m_dxBase->GetDeviceContext());
-	result = m_textureShader->Render(m_dxBase->GetDeviceContext(), worldMatrix, m_viewMatrix, m_projectionMatrix, m_terrain->GetIndexCount(), m_terrain->GetTexture(), m_light->GetViewMatrix(), m_light->GetProjectionMatrix(), m_renderTexture->GetShaderResourceView());
-	if (!result)
-	{
-		return false;
-	}
-
-	//// Turn off the Z buffer to begin all 2D rendering.
-	//m_dxBase->TurnZBufferOff();
-
-	//// Turn on the alpha blending before rendering the text.
-	//m_dxBase->TurnOnAlphaBlending();
-
-	////Text
-	//worldMatrix = m_text->GetWorldMatrix();
-
-	//m_text->Render(m_dxBase->GetDeviceContext(), "HELLO");
-	//result = m_fontShader->Render(m_dxBase->GetDeviceContext(), m_text->GetVertexCount(), m_text->GetWorldMatrix(), m_viewMatrix, m_orthographicMatrix, m_text->GetTexture());
-	//if (!result)
-	//{
-	//	return false;
-	//}
-
-	//// Turn off alpha blending after rendering the text.
-	//m_dxBase->TurnOffAlphaBlending();
-
-	//// Turn the Z buffer back on now that all 2D rendering has completed.
-	//m_dxBase->TurnZBufferOn();
-	
 	m_dxBase->Present();
 
 	return true;

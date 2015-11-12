@@ -24,9 +24,9 @@ public:
 	float GetCamPosZ() { return m_camPosition.z; }
 
 private:
-	XMFLOAT4 m_camPosition;
-	XMFLOAT4 m_camTarget;
-	XMFLOAT4 m_camUp;
+	XMFLOAT3 m_camPosition;
+	XMFLOAT3 m_camTarget;
+	XMFLOAT3 m_camUp;
 	XMFLOAT4X4 m_view;
 };
 

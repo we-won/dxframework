@@ -15,6 +15,7 @@ const bool VSYNC_ENABLED = false;
 #include "RenderTexture.h"
 #include "DepthShader.h"
 
+#include "ModelLx.h"
 #include "Terrain.h"
 #include "TextManager.h"
 #include "Cube.h"
@@ -54,10 +55,11 @@ private:
 	XMFLOAT4X4 m_orthographicMatrix;
 
 	//Displays
-	Terrain* m_terrain;
-	TextManager* m_text;
-	Cube* m_cube;
-	Cube* m_cube_2;
+	ModelLx *m_CubeModel, *m_GroundModel, *m_SphereModel; 
+	//Terrain* m_terrain;
+	//TextManager* m_text;
+	//Cube* m_cube;
+	//Cube* m_cube_2;
 
 	//Mouse Test
 	int m_rightClickState;

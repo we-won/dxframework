@@ -42,7 +42,7 @@ VS_OUTPUT VS(float4 inPos : POSITION, float2 inTexCoord : TEXCOORD, float3 norma
 	 
 	output.TexCoord = inTexCoord;
 	
-	output.normal = mul(normal, (float3x3)World);
+	output.normal = mul(normal, World);
 	output.normal = normalize(output.normal);
 	
 	worldPosition = mul(inPos, World);
@@ -76,8 +76,8 @@ float4 PS(VS_OUTPUT input) : SV_TARGET
 		lightDepthValue = input.lightViewPosition.z / input.lightViewPosition.w;
 		lightDepthValue = lightDepthValue - bias;
 
-		//if(lightDepthValue < depthValue)
-		if(true)
+		if(lightDepthValue < depthValue)
+		//if(true)
 		{
 			lightIntensity = saturate(dot(input.normal, input.lightPos));
 

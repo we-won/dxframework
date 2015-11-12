@@ -4,8 +4,8 @@
 Terrain::Terrain()
 : m_indexBuffer(0), m_vertexBuffer(0), m_texture(0)
 {
-	m_terrain.x = 50;
-	m_terrain.y = 50;
+	m_terrain.x = 1;
+	m_terrain.y = 1;
 
 	m_vertexCount = m_terrain.x * m_terrain.y * 4;
 	m_indexCount = m_terrain.x * m_terrain.y * 6;
@@ -38,18 +38,18 @@ bool Terrain::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContex
 			++index_v;
 
 			// lower right
-			vertices[index_v] = Vertex(0.0f + x, 0.0f, 1.0f + y, 0.0f, 0.0f, -1.0f, +1.0f, -1.0f);
+			vertices[index_v] = Vertex(0.0f + x, 0.0f, 100.0f + y, 0.0f, 0.0f, -1.0f, +1.0f, -1.0f);
 			indices[index_i + 1] = index_v;
 			++index_v;
 
 			// upper right
-			vertices[index_v] = Vertex(1.0f + x, 0.0f, 1.0f + y, 1.0f, 0.0f, +1.0f, +1.0f, -1.0f);
+			vertices[index_v] = Vertex(100.0f + x, 0.0f, 100.0f + y, 1.0f, 0.0f, +1.0f, +1.0f, -1.0f);
 			indices[index_i + 2] = index_v;
 			indices[index_i + 4] = index_v;
 			++index_v;
 
 			// upper left
-			vertices[index_v] = Vertex(1.0f + x, 0.0f, 0.0f + y, 1.0f, 1.0f, +1.0f, -1.0f, -1.0f);
+			vertices[index_v] = Vertex(100.0f + x, 0.0f, 0.0f + y, 1.0f, 1.0f, +1.0f, -1.0f, -1.0f);
 			indices[index_i + 5] = index_v;
 			++index_v;
 
