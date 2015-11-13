@@ -7,34 +7,12 @@
 
 class LightLx
 {
-private:
-	struct Light
-	{
-		Light()
-		{
-			ZeroMemory(this, sizeof(Light));
-		}
-		XMFLOAT3 dir;
-		float pad;
-		XMFLOAT4 ambient;
-		XMFLOAT4 diffuse;
-	};
-
-	struct cbPerFrame
-	{
-		Light light;
-	};
-
 public:
 	LightLx();
 	~LightLx();
 
 	bool Initialize(ID3D11Device* device);
 	void ReleaseObjects();
-
-	void SetLightEffectsOn();
-	void SetLightEffectsOff();
-	void ApplyLight(ID3D11DeviceContext* deviceContext);
 
 	bool GenerateViewMatrix();
 	bool GenerateProjectionMatrix();
@@ -43,10 +21,6 @@ public:
 	XMFLOAT4X4 GetProjectionMatrix() { return m_projectionMatrix; }
 
 private:
-	ID3D11Buffer* m_cbPerFrameBuffer;
-	Light m_light;
-	cbPerFrame m_constbuffPerFrame;
-
 	XMFLOAT4X4 m_viewMatrix;
 	XMFLOAT4X4 m_projectionMatrix;
 };
